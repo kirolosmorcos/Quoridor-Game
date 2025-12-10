@@ -6,7 +6,7 @@ GameState  chooseBestMove(GameState state, int depth){
 //difficulty level
 //bestScore = -infinity
 //bestMove = null
-//
+// GameState temp;
 //for move in getAllLegalMoves(state, AIPlayer):
 //newState = applyMove(state, move)
 //score = alphaBeta(newState, depth - 1, -infinity, +infinity, false)
