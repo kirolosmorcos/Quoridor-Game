@@ -2,6 +2,10 @@
 // Created by kiro3 on 12/10/2025.
 //
 
+#include "../Models/GameState.h"
+#include <bits/stdc++.h>
+
+using namespace std;
 vector<GameState>  normalPawnMoves(GameState gamestate)
 {
     // Implement the logic to calculate normal pawn moves up,right ,left, down
