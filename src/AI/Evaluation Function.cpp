@@ -5,7 +5,7 @@ int evaluateBoard(GameState state){
 //    score = (opponentDistance - aiDistance) * 10
 //            + (AI walls remaining) * 2
 //                                   - (opponent walls remaining) * 1
-//
+// + BlockingPotential(state)*weight
 //  +winBonus
 
 

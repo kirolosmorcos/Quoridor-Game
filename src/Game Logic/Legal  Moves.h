@@ -12,6 +12,9 @@ using namespace std;
 
 vector<GameState> getAllLegalMoves(GameState gamestate );
 
+vector <GameState> getAscendingHeuristicMoves(GameState gamestate ,int numberOfMoves);
+vector<GameState> getDescendingHeuristicMoves(GameState gamestate ,int numberOfMoves);
+
 vector<GameState>  normalPawnMoves(GameState gamestate);
 vector<GameState> jumpMoves(GameState gamestate);
 vector<GameState> horizontalWallMoves(GameState gamestate);

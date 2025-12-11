@@ -8,5 +8,7 @@
 #include "../Models/GameState.h"
 
 int evaluateBoard(GameState state);
+int heuresticDistanceToGoalDifference(GameState state);
+int BlockingPotential(GameState state);
 
 #endif //QUORIDOR_EVALUAION_FUNCTION_H
