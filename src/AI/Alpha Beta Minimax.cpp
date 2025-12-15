@@ -1,4 +1,4 @@
-#include "Alpha Beta Minimax.h"
+#include "AlphaBetaMinimax.h"
 #include "../Models/GameState.h"
 #include <limits>
 #include <vector>
