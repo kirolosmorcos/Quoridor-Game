@@ -18,11 +18,11 @@ public:
     int p0_walls;
     int p1_walls;
 
-    int getrow(int pos)
+    static int getrow(int pos)
     {
         return pos / 9;
     }
-    int getcol(int pos)
+    static int getcol(int pos)
     {
         return pos % 9;
     }
