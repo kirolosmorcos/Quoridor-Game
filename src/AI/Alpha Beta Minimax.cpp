@@ -45,7 +45,7 @@ static const int INF = std::numeric_limits<int>::max();
  * - Reduces number of nodes evaluated compared to plain minimax.
  * - Heuristic move ordering further improves efficiency.
  */
-int alphaBeta(GameState gameState, int depth, int alpha, int beta, bool maximizingPlayer)
+int AlphaBetaMinimax(GameState gameState, int depth, int alpha, int beta, bool maximizingPlayer)
 {
     // 1. Terminal condition
     if (depth == 0 || gameState.isGameOver()) {
@@ -55,6 +55,7 @@ int alphaBeta(GameState gameState, int depth, int alpha, int beta, bool maximizi
     // 2. Generate heuristic-ordered successor states
     // Limit number of moves to control branching factor
     const int NUMBER_OF_MOVES = 10;  // change this to be more difficult ai 
+    
     /*
         enum AIDifficulty {
     EASY,
@@ -77,19 +78,12 @@ AIConfig getAIConfig(AIDifficulty difficulty) {
     return {3, 10};
 }
 example of changes in the code 
+
 AIConfig config = getAIConfig(MEDIUM);
 
-int score = alphaBeta(
-    currentState,
-    config.depth,
-    -INF,
-    INF,
-    true
-);
+int score = alphaBeta( currentState,config.depth, -INF, INF,true);
 
-nextStates = getDescendingHeuristicMoves(
-    gameState, maximizingPlayer, config.numberOfMoves
-);
+nextStates = getDescendingHeuristicMoves( gameState, maximizingPlayer, config.numberOfMoves);
 
 */
     std::vector<GameState> nextStates;
@@ -108,7 +102,7 @@ nextStates = getDescendingHeuristicMoves(
         int maxEval = -INF;
 
         for (const GameState& nextState : nextStates) {
-            int eval = alphaBeta(nextState, depth - 1, alpha, beta, false);
+            int eval = AlphaBetaMinimax(nextState, depth - 1, alpha, beta, false);
 
             maxEval = std::max(maxEval, eval);
             alpha   = std::max(alpha, eval);
@@ -125,7 +119,7 @@ nextStates = getDescendingHeuristicMoves(
         int minEval = INF;
 
         for (const GameState& nextState : nextStates) {
-            int eval = alphaBeta(nextState, depth - 1, alpha, beta, true);
+            int eval = AlphaBetaMinimax(nextState, depth - 1, alpha, beta, true);
 
             minEval = std::min(minEval, eval);
             beta    = std::min(beta, eval);
