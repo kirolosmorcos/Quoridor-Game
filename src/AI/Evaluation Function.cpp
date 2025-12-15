@@ -4,9 +4,7 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-//
-// Created by kiro3 on 12/10/2025.
-//
+
 int evaluateBoard(GameState state){
 //    score = (opponentDistance - aiDistance) * 10
 //            + (AI walls remaining) * 2
@@ -41,7 +39,21 @@ int BlockingPotential(GameState state, bool aiPlayer, bool opponentPlayer ) {
 
     // Measure opponent's current shortest path
 
-    int currentOppDistance = bfs(board, opponentPlayer);
+    int currentOppDistance = bfs(state, opponentPlayer);
+
+    //Check each legal wall
+
+    for (auto &wall : legalWalls) {
+    int newOppDistance = bfs(wall, opponentPlayer);
+    int bonus = newOppDistance - currentOppDistance;
+    if (bonus > 0) {
+        int blockingBonusScore = bonus * 2;
+        blockingBonus = max(blockingBonus, blockingBonusScore);
+    }
+    return blockingBonus;
+}
+
+
 
 
 }
