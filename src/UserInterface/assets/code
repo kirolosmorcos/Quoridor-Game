@@ -1,0 +1,2 @@
+QPixmap pix("assets/pawn_white.png");
+setBrush(pix);
