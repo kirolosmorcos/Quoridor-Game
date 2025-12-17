@@ -6,7 +6,7 @@
 WallItem::WallItem(ori o)
 {
     setBrush(Qt::black);
-    setZValue(1);
+    setZValue(4);
     setOrientation(o);
 }
 

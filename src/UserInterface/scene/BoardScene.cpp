@@ -68,8 +68,11 @@ void BoardScene::reset() {
     black->setPos(4*STEP + CELL_SIZE/2, 0*STEP + CELL_SIZE/2 );
     white->setBoardPos(8, 4);
     black->setBoardPos(0, 4);
-    updateTurnHighlight();
 
+    QColor goalColor(255, 215, 0, 60);
+    whiteGoalRect = addRect(0, 0, 9 * STEP - WALL_GAP, CELL_SIZE, Qt::NoPen, goalColor);
+    blackGoalRect = addRect(0, 8* STEP, 9 * STEP - WALL_GAP, CELL_SIZE, Qt::NoPen, goalColor);
+    updateTurnHighlight();
 }
 
 HoverType BoardScene::detectHover(const QPointF &p, int &row, int &col) const
@@ -101,6 +104,11 @@ HoverType BoardScene::detectHover(const QPointF &p, int &row, int &col) const
 
 void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     //TODO: check remaining walls for the current player
+    if (!boardEnabled) {
+        wallPreview->setVisible(false);
+        event->ignore();
+        return;
+    }
 
     int r, c;
     HoverType type = detectHover(event->scenePos(), r, c);
@@ -137,6 +145,10 @@ void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 
 
 void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+    if (!boardEnabled) {
+        event->ignore();
+        return;
+    }
     if (event->button() != Qt::LeftButton) return;
 
     int r, c;
@@ -213,6 +225,9 @@ bool BoardScene::movePawn(PawnItem *pawn, int toRow, int toCol)
 
     pawn->setBoardPos(toRow, toCol);
     pawn->animateMove(cellCenter(toRow, toCol));
+    if (checkWin()) {
+        return false;
+    }
     return true;
 }
 
@@ -221,6 +236,14 @@ void BoardScene::updateTurnHighlight()
     white->setOpacity(turn == Turn::White ? 1.0 : 0.4);
     black->setOpacity(turn == Turn::Black ? 1.0 : 0.4);
     showMoveHighlights(turn == Turn::White ? white : black);
+    if (turn == Turn::White) {
+        whiteGoalRect->setVisible(true);
+        blackGoalRect->setVisible(false);
+    }
+    else {
+        blackGoalRect->setVisible(true);
+        whiteGoalRect->setVisible(false);
+    }
 }
 
 void BoardScene::clearMoveHighlights()
@@ -230,6 +253,8 @@ void BoardScene::clearMoveHighlights()
         delete r;
     }
     moveHighlights.clear();
+    whiteGoalRect->setVisible(false);
+    blackGoalRect->setVisible(false);
 }
 
 void BoardScene::showMoveHighlights(PawnItem *pawn)
@@ -259,3 +284,38 @@ void BoardScene::showMoveHighlights(PawnItem *pawn)
         moveHighlights.append(rect);
     }
 }
+
+bool BoardScene::checkWin() {
+    int p0_row = white->boardPos().x();
+    int p1_row = black->boardPos().x();
+
+    if (p0_row == 0) {
+        handleWin("White Wins!");
+        return true;
+    }
+
+    if (p1_row == 8) {
+        //TODO: handle palyer type
+        handleWin("Black Wins!");
+        return true;
+
+    }
+        return false;
+
+}
+
+void BoardScene::handleWin(QString w)
+{
+    QString text = w;
+
+    auto *msg = addText(text, QFont("Arial", 28, QFont::Bold));
+    msg->setDefaultTextColor(Qt::yellow);
+    msg->setZValue(10);
+    msg->setPos(sceneRect().center() - QPointF(120, 40));
+
+    // Block further input
+    setBoardEnabled(false);
+    // QMessageBox::information(nullptr, "Game Over", winner + " wins!");
+}
+
+

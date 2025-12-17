@@ -30,10 +30,19 @@ class BoardScene : public QGraphicsScene {
     void updateTurnHighlight();
     void showMoveHighlights(PawnItem *pawn);
     void clearMoveHighlights();
+    bool checkWin();
+    void handleWin(QString w);
 
     QVector<QGraphicsRectItem*> moveHighlights;
     WallItem *wallPreview = nullptr;
     HoverType lastHover = HoverType::None;
+    QGraphicsRectItem *whiteGoalRect = nullptr;
+    QGraphicsRectItem *blackGoalRect = nullptr;
+
+    void setBoardEnabled(bool enabled) {
+        boardEnabled = enabled;
+        clearMoveHighlights();
+    }
 
 public slots:
 void reset();
@@ -49,6 +58,7 @@ private:
     Turn turn;
     bool hWall[BOARD_SIZE - 1][BOARD_SIZE]; // horizontal walls
     bool vWall[BOARD_SIZE][BOARD_SIZE - 1]; // vertical walls
+    bool boardEnabled = true;
 
 
 
