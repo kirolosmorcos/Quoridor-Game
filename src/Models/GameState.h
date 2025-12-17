@@ -8,7 +8,7 @@ public:
 
     bool turn;
     int player0_pos;
-    int player1_pos;
+    int player1_pos; //ai player
     bool horizontal_walls[8][9];
     bool vertical_walls[9][8];
     int p0_walls;

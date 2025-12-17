@@ -1,4 +1,6 @@
 #include "../Models/GameState.h"
+#include "../Game Logic/Legal Moves.h"
+#include "Alph Beta Minimax.h"
 
 
 //
@@ -16,4 +18,19 @@ GameState  chooseBestMove(GameState state, int depth){
 //if score > bestScore:
 //bestScore = score
 //bestMove = move
+
+GameState bestState;
+int bestScore = INT_MIN;
+vector <GameState> legalMoves= getAllLegalMoves(state, true);
+for(GameState move : legalMoves) {
+
+    int score = alphaBeta(move, depth - 1, INT_MIN, INT_MAX, true);
+
+    if (score > bestScore) {
+        bestScore = score;
+        bestState = move;
+    }
+}
+return bestState;
+
 }
