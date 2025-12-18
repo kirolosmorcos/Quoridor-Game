@@ -10,6 +10,7 @@
 
 #include "../Models/GameState.h"
 #include <bits/stdc++.h>
+
 using namespace std;
 
 bool hoverHorizontal[8][9];
