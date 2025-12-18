@@ -26,11 +26,13 @@ class BoardScene : public QGraphicsScene {
     HoverType detectHover(const QPointF &p, int &row, int &col) const;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
-    QVector<QPoint> getAvailableMoves(int r, int c) const;
+    QVector<QPoint> getAvailableMoves();
     bool movePawn(PawnItem *pawn, int toRow, int toCol);
 
+    void updateLocation();
+    void updateWalls();
     void updateTurnHighlight();
-    void showMoveHighlights(PawnItem *pawn);
+    void showMoveHighlights();
     void clearMoveHighlights();
     bool checkWin();
     void handleWin(QString w);
@@ -58,7 +60,7 @@ protected:
 private:
     PawnItem *white;
     PawnItem *black;
-    Turn turn;
+    // Turn turn;
     bool hWall[BOARD_SIZE - 1][BOARD_SIZE]; // horizontal walls
     bool vWall[BOARD_SIZE][BOARD_SIZE - 1]; // vertical walls
     bool boardEnabled = true;
