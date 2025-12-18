@@ -15,7 +15,7 @@ qt_standard_project_setup()
 qt_add_resources(RESOURCE_FILES resources.qrc)
 
 add_executable(Quoridor_Game
-        "src/AI/Alph Beta Minimax.h"
+        "src/AI/Alpha Beta Minimax.h"
         "src/AI/Alpha Beta Minimax.cpp"
         "src/AI/Best Move.cpp"
         "src/AI/Best Move.h"

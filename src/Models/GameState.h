@@ -22,6 +22,10 @@ public:
     {
         return pos % 9;
     }
+    bool isGameOver() const
+    {
+        return getrow(player1_pos) == 8 || getrow(player0_pos) == 0;
+    }
 };
 
 

@@ -9,9 +9,7 @@ int evaluateBoard(GameState state) {
 
 	int score = heuresticDistanceToGoalDifference(state);
 
-	int aiWalls = state.p1_walls;
-	int oppWalls = state.p0_walls;
-	score = +(aiWalls) * 2 - (oppWalls) * 1;
+
 	score += (BlockingPotential(state) * 5);
 
 	return score;
@@ -42,6 +40,9 @@ int heuresticDistanceToGoalDifference(GameState state) {
 		winBonus = 0;
 	}
 	int score = (oppDistance - aiDistance) * 10 + winBonus;
+    int aiWalls = state.p1_walls;
+    int oppWalls = state.p0_walls;
+    score +=((aiWalls) *5 - (oppWalls) * 1);
 	return score;
 }
 
@@ -67,10 +68,10 @@ int BlockingPotential(GameState state) {
 		int newOppDistance = bfs(wall, false);
 		int bonus = newOppDistance - currentOppDistance;
 		if (bonus > 0) {
-			int blockingBonusScore = bonus * 2;
-			blockingBonus = max(blockingBonus, blockingBonusScore);
+
+			blockingBonus = max(blockingBonus, bonus);
 		}
-		return blockingBonus;
+
 	}
 
 	return blockingBonus;
