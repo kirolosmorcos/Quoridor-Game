@@ -1,13 +1,10 @@
-//
-// Created by kiro3 on 12/10/2025.
-//
-
 #ifndef QUORIDOR_LEGAL_MOVES_H
 #define QUORIDOR_LEGAL_MOVES_H
 
 #include "../Models/GameState.h"
 #include "../AI/Evaluaion Function.h"
 #include "BFS.h"
+#include "../UserInterface/Controller.h"
 #include <vector>
 #include <algorithm>
 

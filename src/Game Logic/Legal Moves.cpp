@@ -335,6 +335,8 @@ vector<GameState> horizontalWallMoves(GameState gameState, bool player) {
 			if (shortest_path_player_0 != -1 && shortest_path_player_1 != -1) {
 				// valid wall
 				legalWallMoves.push_back(gameState);
+				// Add to UI legal hover horizontal wall array
+				hoverHorizontal[i][j] = true;
 			}
 			// remove wall
 			gameState.horizontal_walls[i][j] = false;
@@ -387,6 +389,8 @@ vector<GameState> verticalWallMoves(GameState gameState, bool player) {
 			if ((shortest_path_player_0 != -1) && (shortest_path_player_1 != -1)) {
 				// valid wall
 				legalWallMoves.push_back(gameState);
+				// Add to UI legal hover vertical wall array
+				hoverVertical[i][j] = true;
 			}
 			// remove wall
 			gameState.vertical_walls[i][j] = false;
