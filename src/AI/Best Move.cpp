@@ -1,4 +1,5 @@
 
+
 #include "Best Move.h"
 #include "Alpha Beta Minimax.h"
 
@@ -68,20 +69,38 @@ GameState  chooseBestMove(GameState state, int depth){
 
 GameState bestState;
 int bestScore = INT_MIN;
-vector <GameState> legalMoves= getDescendingHeuristicMoves(state, true,3);
+vector <GameState> legalMoves= getDescendingHeuristicMoves(state, true,10);
 
-for(GameState move : legalMoves) {
-//    cout<<"heurestic--> "<<heuresticDistanceToGoalDifference(move)<<endl;
-//    drawState2(move);
-    int score = AlphaBetaMinimax(move, depth - 1, INT_MIN, INT_MAX, false);
-//    cout<<"Score--> " <<score<<endl;
-    if (score > bestScore) {
-        bestScore = score;
-        bestState = move;
+//for(GameState move : legalMoves) {
+////    cout<<"heurestic--> "<<heuresticDistanceToGoalDifference(move)<<endl;
+////    drawState2(move);
+//    int score = AlphaBetaMinimax(move, depth - 1, INT_MIN, INT_MAX, false);
+////    cout<<"Score--> " <<score<<endl;
+//    if (score > bestScore) {
+//        bestScore = score;
+//        bestState = move;
+//
+//
+//    }
 
+    int alpha = INT_MIN;
+    int beta = INT_MAX;
+    for (const GameState& nextState : legalMoves) {
+        int eval = AlphaBetaMinimax(nextState, depth - 1, alpha, beta, false);
 
+        if (eval > bestScore) {
+            bestScore = eval;
+            bestState = nextState;
+        }
+
+        alpha   = std::max(alpha, eval);
+
+        if (beta <= alpha) {
+            break; //  Alpha–Beta pruning
+        }
     }
-}
+
+
 return bestState;
 
 }

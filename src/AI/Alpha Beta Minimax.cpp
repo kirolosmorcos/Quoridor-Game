@@ -46,7 +46,7 @@ static const int INF = std::numeric_limits<int>::max();
  * - Reduces number of nodes evaluated compared to plain minimax.
  * - Heuristic move ordering further improves efficiency.
  */
-int AlphaBetaMinimax(GameState gameState, int depth, int alpha, int beta, bool maximizingPlayer)
+int AlphaBetaMinimax(const GameState & gameState, int depth, int alpha, int beta, bool maximizingPlayer)
 {
     // 1. Terminal condition
     if (depth == 0 || gameState.isGameOver()) {
@@ -55,7 +55,7 @@ int AlphaBetaMinimax(GameState gameState, int depth, int alpha, int beta, bool m
 
     // 2. Generate heuristic-ordered successor states
     // Limit number of moves to control branching factor
-    const int NUMBER_OF_MOVES = 3;  // change this to be more difficult ai
+    const int NUMBER_OF_MOVES = 100;  // change this to be more difficult ai
     
     /*
         enum AIDifficulty {
@@ -109,6 +109,10 @@ nextStates = getDescendingHeuristicMoves( gameState, maximizingPlayer, config.nu
             alpha   = std::max(alpha, eval);
 
             if (beta <= alpha) {
+                if (depth==1)
+                {
+                cout<<"Pruned at depth 2"<<endl;
+                }
                 break; //  Alpha–Beta pruning
             }
         }
@@ -126,6 +130,10 @@ nextStates = getDescendingHeuristicMoves( gameState, maximizingPlayer, config.nu
             beta    = std::min(beta, eval);
 
             if (beta <= alpha) {
+                if (depth==1)
+                {
+                    cout<<"Pruned at depth 2"<<endl;
+                }
                 break; // Alpha–Beta pruning
             }
         }

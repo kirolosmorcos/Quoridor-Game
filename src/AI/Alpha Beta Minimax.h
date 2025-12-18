@@ -7,5 +7,5 @@
 
 #include "../Models/GameState.h"
 
-int AlphaBetaMinimax(GameState gameState, int depth, int alpha, int beta, bool maximizingPlayer);
+int AlphaBetaMinimax(const GameState & gameState, int depth, int alpha, int beta, bool maximizingPlayer);
 #endif //QUORIDOR_ALPHA_BETA_MINIMAX_H

@@ -23,8 +23,8 @@ int bfs(GameState startState, bool player)
         int row = curPos / 9;
 
         //  Goal check
-        if (!player && row == 8) return dist;
-        if (player && row == 0) return dist;
+        if (player && row == 8) return dist;
+        if (!player && row == 0) return dist;
 
         // Generate legal moves
         vector<GameState> nextMoves;

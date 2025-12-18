@@ -10,7 +10,7 @@ int evaluateBoard(GameState state) {
 	int score = heuresticDistanceToGoalDifference(state);
 
 
-	//score += (BlockingPotential(state) * 5);
+	score += (BlockingPotential(state) * 5);
 
 	return score;
 

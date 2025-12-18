@@ -23,8 +23,8 @@ GameState emptyState()
 {
     GameState s{};
     s.turn = false;
-    s.player0_pos = 4;      // (0,4)
-    s.player1_pos = 79;     // (8,4)
+    s.player0_pos = 76;      // (0,4)
+    s.player1_pos = 4;     // (8,4)
     s.p0_walls = 10;
     s.p1_walls = 10;
 
@@ -90,14 +90,30 @@ GameState baseTestState()
 {
     GameState s = emptyState();
 
-    // Some existing walls to make it interesting
-    for(int c = 0; c < 7; c++) {
-        s.horizontal_walls[1][c] = true;
+    // Player 0 (opponent) — looks fast
+    s.player1_pos = 22;   // (2,4)
 
+    // Player 1 (AI)
+    s.player0_pos = 67;   // (7,4)
+
+    // Walls form a deceptive corridor
+    // Horizontal funnel
+    for (int c = 0; c < 8; c++) {
+        if (c != 4)
+            s.horizontal_walls[3][c] = true;
     }
 
+    // Vertical side locks
+    s.vertical_walls[2][3] = true;
     s.vertical_walls[3][3] = true;
-    s.vertical_walls[4][3] = true;
+
+    s.vertical_walls[2][5] = true;
+    s.vertical_walls[3][5] = true;
+
+    // Additional misleading walls
+    s.horizontal_walls[1][2] = true;
+    s.horizontal_walls[1][3] = true;
+    s.horizontal_walls[1][4] = true;
 
     return s;
 }
@@ -130,9 +146,9 @@ int main()
 //    }
 
 
-while(t--)
+//while(t--)
     {
-         auto aiMove = chooseBestMove(base, 3);
+         auto aiMove = chooseBestMove(base, 2);
 
 
          cout << "\n--- Ai Move #" << " ---\n";
