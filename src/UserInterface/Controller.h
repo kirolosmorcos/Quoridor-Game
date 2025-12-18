@@ -9,6 +9,7 @@
 //3iz gamestate mn AI
 
 #include "../Models/GameState.h"
+#include "../Game Logic/Legal Moves.h"
 #include <bits/stdc++.h>
 
 using namespace std;
