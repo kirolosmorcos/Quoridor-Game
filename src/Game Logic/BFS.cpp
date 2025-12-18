@@ -1,13 +1,6 @@
-#include "../Models/GameState.h"
-#include "Legal  Moves.h"
-#include <queue>
-#include <cstring>
+#include "BFS.h"
 
-using namespace std;
-
-
-
-int bfs(const GameState& startState, bool player)
+int bfs(GameState startState, bool player)
 {
     bool visited[81] = {false};
 
