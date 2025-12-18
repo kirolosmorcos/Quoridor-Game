@@ -6,6 +6,9 @@
 #define QUORIDOR_BEST_MOVE_H
 
 #include "../Models/GameState.h"
+#include "../Models/GameState.h"
+#include "../Game Logic/Legal Moves.h"
+#include "Alph Beta Minimax.h"
 
 GameState  chooseBestMove(GameState state, int depth);
 

@@ -10,10 +10,12 @@
 
 #include "../Models/GameState.h"
 #include <bits/stdc++.h>
+
+#pragma once
 using namespace std;
 
-bool hoverHorizontal[8][9];
-bool hoverVertical[9][8];
+inline bool hoverHorizontal[8][9];
+inline bool hoverVertical[9][8];
 
 
 vector<int> getPawnLegalMoves(GameState state);

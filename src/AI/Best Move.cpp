@@ -1,7 +1,5 @@
-#include "../Models/GameState.h"
-#include "../Game Logic/Legal Moves.h"
-#include "Alph Beta Minimax.h"
 
+#include "Best Move.h"
 
 //
 // Created by kiro3 on 12/10/2025.

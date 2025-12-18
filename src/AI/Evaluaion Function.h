@@ -2,8 +2,8 @@
 #define QUORIDOR_EVALUAION_FUNCTION_H
 
 #include "../Models/GameState.h"
-#include "BFS.h"
-#include "Legal Moves.h"
+#include "../Game Logic/BFS.h"
+#include "../Game Logic/Legal Moves.h"
 #include <vector>
 #include <algorithm>
 using namespace std;
