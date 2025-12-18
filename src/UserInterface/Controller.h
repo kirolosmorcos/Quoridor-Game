@@ -9,19 +9,16 @@
 //3iz gamestate mn AI
 
 #include "../Models/GameState.h"
-#include "../Game Logic/Legal Moves.h"
 #include <bits/stdc++.h>
-#include <QPoint>
-#include <QVector>
 
-
+#pragma once
 using namespace std;
 
-bool hoverHorizontal[8][9];
-bool hoverVertical[9][8];
+inline bool hoverHorizontal[8][9];
+inline bool hoverVertical[9][8];
 
 
-QVector<QPoint> getPawnLegalMoves(GameState state);
+vector<int> getPawnLegalMoves(GameState state);
 void hoverWall(GameState state);
 
 GameState AIMove(GameState state);
