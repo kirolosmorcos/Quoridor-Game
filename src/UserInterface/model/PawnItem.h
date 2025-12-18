@@ -19,12 +19,12 @@ public:
 
     void animateMove(const QPointF &targetPos);
 
-    QPoint boardPos() const { return m_boardPos; }
-    void setBoardPos(int r, int c) { m_boardPos = QPoint(r, c); }
+    // QPoint boardPos() const { return m_boardPos; }
+    // void setBoardPos(int r, int c) { m_boardPos = QPoint(r, c); }
 
 private:
     QColor m_color;
-    QPoint m_boardPos;
+    // QPoint m_boardPos;
 
 
 };

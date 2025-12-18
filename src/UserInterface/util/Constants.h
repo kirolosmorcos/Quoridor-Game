@@ -21,7 +21,7 @@ static constexpr int WALL_LEN = CELL_SIZE * 2 + WALL_THICK;
 
 enum class GameMode { PvP, PvAI };
 enum class Difficulty { Easy, Medium, Hard };
-enum class Turn { White, Black };
+// enum class Turn { White, Black };
 enum  class ori {Horizontal, Vertical};
 enum class HoverType {
     Cell,
