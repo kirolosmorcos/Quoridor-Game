@@ -1,7 +1,6 @@
 #include "BoardScene.h"
 
 #include <iostream>
-
 #include "../model/PawnItem.h"
 #include "../model/WallItem.h"
 #include <QGraphicsSceneMouseEvent>
@@ -27,7 +26,8 @@ void BoardScene::reset() {
 
     // turn = Turn::White;
     game.turn = false;
-
+    game.p0_walls = 10;
+    game.p1_walls = 10;
     //TODO: reset wall arrays
     memset(game.horizontal_walls, false, sizeof(game.horizontal_walls));
     memset(game.vertical_walls, false, sizeof(game.vertical_walls));
@@ -70,10 +70,6 @@ void BoardScene::reset() {
 
     game.player0_pos = 76; // row 0, col 4
     game.player1_pos = 4;  // row 8, col 4
-
-    QColor goalColor(255, 215, 0, 60);
-    whiteGoalRect = addRect(0, 0, 9 * STEP - WALL_GAP, CELL_SIZE, Qt::NoPen, goalColor);
-    blackGoalRect = addRect(0, 8* STEP, 9 * STEP - WALL_GAP, CELL_SIZE, Qt::NoPen, goalColor);
     updateTurnHighlight();
 }
 
@@ -105,7 +101,6 @@ HoverType BoardScene::detectHover(const QPointF &p, int &row, int &col) const
 }
 
 void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
-
     if (!boardEnabled) {
         wallPreview->setVisible(false);
         event->ignore();
@@ -133,18 +128,22 @@ void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 
     if (type == HoverType::VerticalEdge) {
         if (!(r >= BOARD_SIZE - 1 || c >= BOARD_SIZE - 1)) {
-            wallPreview->setOrientation(ori::Vertical);
-            wallPreview->setPos(c * STEP + CELL_SIZE - (WALL_THICK-WALL_GAP)/2, r * STEP - (WALL_LEN - STEP - CELL_SIZE)/2 );
-            wallPreview->setOpacity(0.4);
-            wallPreview->setVisible(true);
+            if (hoverVertical[r][c]) {
+                wallPreview->setOrientation(ori::Vertical);
+                wallPreview->setPos(c * STEP + CELL_SIZE - (WALL_THICK-WALL_GAP)/2, r * STEP - (WALL_LEN - STEP - CELL_SIZE)/2 );
+                wallPreview->setOpacity(0.4);
+                wallPreview->setVisible(true);
+            }
         }
     }
     else if (type == HoverType::HorizontalEdge) {
         if (!(r >= BOARD_SIZE - 1 || c >= BOARD_SIZE - 1)) {
-            wallPreview->setOrientation(ori::Horizontal);
-            wallPreview->setPos(c * STEP - (WALL_LEN - STEP - CELL_SIZE)/2, r * STEP + CELL_SIZE - (WALL_THICK-WALL_GAP)/2);
-            wallPreview->setOpacity(0.4);
-            wallPreview->setVisible(true);
+            if (hoverHorizontal[r][c]) {
+                wallPreview->setOrientation(ori::Horizontal);
+                wallPreview->setPos(c * STEP - (WALL_LEN - STEP - CELL_SIZE)/2, r * STEP + CELL_SIZE - (WALL_THICK-WALL_GAP)/2);
+                wallPreview->setOpacity(0.4);
+                wallPreview->setVisible(true);
+            }
         }
     }
     else {
@@ -164,48 +163,73 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
     //TODO: change game state accordingly
     if (type == HoverType::Cell) {
-        PawnItem *p ;
-
+        PawnItem *p = game.turn == 0 ? white : black;
         if (movePawn(p, r, c)) {
             game.turn = !game.turn;
+            hoverWall(game);
             updateTurnHighlight();
         }
     }
+    else if ((game.turn == 0 && game.p0_walls <= 0) ||
+            (game.turn == 1 && game.p1_walls <= 0)) {
+
+        }
     else if (type == HoverType::VerticalEdge) {
         if (!(r >= BOARD_SIZE - 1 || c >= BOARD_SIZE - 1)) {
+            if (hoverVertical[r][c]){
+                game.vertical_walls[r][c]= true; // TODO: mark wall in array
+                game.vertical_walls[r+1][c]= true; // TODO: mark wall in array
 
-            vWall[r][c]= true; // TODO: mark wall in array
-            vWall[r+1][c]= true; // TODO: mark wall in array
-
-            auto *wall = new WallItem(ori::Vertical);
-            addItem(wall);
-            wall->setPos(c * STEP + CELL_SIZE - (WALL_THICK - WALL_GAP)/2, r * STEP - (WALL_LEN - STEP - CELL_SIZE)/2);
-            game.turn = !game.turn;
-            updateTurnHighlight();
+                auto *wall = new WallItem(ori::Vertical);
+                addItem(wall);
+                wall->setPos(c * STEP + CELL_SIZE - (WALL_THICK - WALL_GAP)/2, r * STEP - (WALL_LEN - STEP - CELL_SIZE)/2);
+                if (game.turn == 0) {
+                    game.p0_walls--;
+                } else {
+                    game.p1_walls--;
+                }
+                game.turn = !game.turn;
+                hoverWall(game);
+                updateTurnHighlight();
+            }
         }
     }
     else if (type == HoverType::HorizontalEdge) {
         if (!(r >= BOARD_SIZE - 1 || c >= BOARD_SIZE - 1)) {
+            if (hoverHorizontal[r][c]) {
+                game.horizontal_walls[r][c]= true; // TODO: mark wall in array
+                game.horizontal_walls[r][c+1]= true; // TODO: mark wall in array
 
-            auto *wall = new WallItem(ori::Horizontal);
-            addItem(wall);
-            wall->setPos(c * STEP - (WALL_LEN - STEP - CELL_SIZE)/2, r * STEP + CELL_SIZE - (WALL_THICK-WALL_GAP)/2);
-            game.turn = !game.turn;
-            updateTurnHighlight();
+                auto *wall = new WallItem(ori::Horizontal);
+                addItem(wall);
+                wall->setPos(c * STEP - (WALL_LEN - STEP - CELL_SIZE)/2, r * STEP + CELL_SIZE - (WALL_THICK-WALL_GAP)/2);
+                if (game.turn == 0) {
+                    game.p0_walls--;
+                } else {
+                    game.p1_walls--;
+                }
+                game.turn = !game.turn;
+                hoverWall(game);
+                updateTurnHighlight();
+            }
         }
     }
 }
-
 
 bool BoardScene::movePawn(PawnItem *pawn, int toRow, int toCol){
     //TODO: function to get available moves
     auto moves = getPawnLegalMoves(game);
 
-    if (!moves.contains(QPoint(toRow, toCol)))
+    if (!moves.contains(QPoint(toRow, toCol))) {
         return false;
-
+    }
 
     pawn->animateMove(cellCenter(toRow, toCol));
+    if (game.turn == 0) {
+        game.player0_pos = toRow * 9 + toCol;
+    } else {
+        game.player1_pos = toRow * 9 + toCol;
+    }
     if (checkWin()) {
         return false;
     }
@@ -215,16 +239,8 @@ bool BoardScene::movePawn(PawnItem *pawn, int toRow, int toCol){
 void BoardScene::updateTurnHighlight(){
 
     white->setOpacity(game.turn == 0 ? 1.0 : 0.4);
-    black->setOpacity(game.turn == 1? 1.0 : 0.4);
+    black->setOpacity(game.turn == 1? 1.0 : 0.2);
     showMoveHighlights();
-    if (game.turn == 0) {
-        whiteGoalRect->setVisible(true);
-        blackGoalRect->setVisible(false);
-    }
-    else {
-        blackGoalRect->setVisible(true);
-        whiteGoalRect->setVisible(false);
-    }
 }
 
 void BoardScene::clearMoveHighlights()
@@ -234,8 +250,6 @@ void BoardScene::clearMoveHighlights()
         delete r;
     }
     moveHighlights.clear();
-    whiteGoalRect->setVisible(false);
-    blackGoalRect->setVisible(false);
 }
 
 void BoardScene::showMoveHighlights()

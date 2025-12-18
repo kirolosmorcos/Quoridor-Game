@@ -1,4 +1,6 @@
 #include "PawnItem.h"
+
+#include <iostream>
 #include <QPainter>
 #include <QPropertyAnimation>
 #include <QEasingCurve>
@@ -28,10 +30,12 @@ void PawnItem::paint(QPainter *painter,
 
 void PawnItem::animateMove(const QPointF &targetPos)
 {
+
     auto *anim = new QPropertyAnimation(this, "pos");
     anim->setDuration(160);
     anim->setStartValue(pos());
     anim->setEndValue(targetPos);
     anim->setEasingCurve(QEasingCurve::OutCubic);
     anim->start(QAbstractAnimation::DeleteWhenStopped);
+
 }

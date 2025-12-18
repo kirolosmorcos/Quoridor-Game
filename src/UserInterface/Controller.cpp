@@ -3,9 +3,6 @@
 //
 #include "Controller.h"
 
-
-
-
 using namespace std;
 QVector<QPoint> getPawnLegalMoves(GameState state){
   bool turn = state.turn;
