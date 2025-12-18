@@ -8,7 +8,7 @@
 #include "../Models/GameState.h"
 #include "../Models/GameState.h"
 #include "../Game Logic/Legal Moves.h"
-#include "Alph Beta Minimax.h"
+#include "Alpha Beta Minimax.h"
 
 GameState  chooseBestMove(GameState state, int depth);
 

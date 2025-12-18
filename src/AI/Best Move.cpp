@@ -1,9 +1,58 @@
 
 #include "Best Move.h"
+#include "Alpha Beta Minimax.h"
 
 //
 // Created by kiro3 on 12/10/2025.
 //
+
+void drawState2(const GameState& s)
+{
+    cout << "\n========================================\n";
+
+    for (int r = 0; r < 9; r++)
+    {
+        // Cells + vertical walls
+        for (int c = 0; c < 9; c++)
+        {
+            int pos = r * 9 + c;
+
+            if (pos == s.player0_pos)      cout << " 0 ";
+            else if (pos == s.player1_pos) cout << " 1 ";
+            else                           cout << " . ";
+
+            if (c < 8)
+            {
+                if (s.vertical_walls[r][c])
+                    cout << "|";
+                else
+                    cout << " ";
+            }
+        }
+        cout << "\n";
+
+        // Horizontal walls
+        if (r < 8)
+        {
+            for (int c = 0; c < 9; c++)
+            {
+                if (s.horizontal_walls[r][c])
+                    cout << "===";
+                else
+                    cout << "   ";
+
+                if (c < 8) cout << " ";
+            }
+            cout << "\n";
+        }
+    }
+
+    cout << "----------------------------------------\n";
+    cout << "BFS P0 = " << bfs(s, false)
+         << " | BFS P1 = " << bfs(s, true) << "\n";
+}
+
+
 GameState  chooseBestMove(GameState state, int depth){
 
 //difficulty level
@@ -19,14 +68,18 @@ GameState  chooseBestMove(GameState state, int depth){
 
 GameState bestState;
 int bestScore = INT_MIN;
-vector <GameState> legalMoves= getAllLegalMoves(state, true);
+vector <GameState> legalMoves= getDescendingHeuristicMoves(state, true,3);
+
 for(GameState move : legalMoves) {
-
-    int score = alphaBeta(move, depth - 1, INT_MIN, INT_MAX, true);
-
+//    cout<<"heurestic--> "<<heuresticDistanceToGoalDifference(move)<<endl;
+//    drawState2(move);
+    int score = AlphaBetaMinimax(move, depth - 1, INT_MIN, INT_MAX, false);
+//    cout<<"Score--> " <<score<<endl;
     if (score > bestScore) {
         bestScore = score;
         bestState = move;
+
+
     }
 }
 return bestState;

@@ -15,7 +15,7 @@ qt_standard_project_setup()
 qt_add_resources(RESOURCE_FILES resources.qrc)
 
 add_executable(Quoridor_Game
-        "src/AI/Alph Beta Minimax.h"
+        "src/AI/Alpha Beta Minimax.h"
         "src/AI/Alpha Beta Minimax.cpp"
         "src/AI/Best Move.cpp"
         "src/AI/Best Move.h"
@@ -44,6 +44,7 @@ add_executable(Quoridor_Game
         src/UserInterface/ui/PawnSelectWindow.cpp
         src/UserInterface/ui/PawnSelectWindow.h
         src/UserInterface/Controller.h
+        src/main.cpp
 )
 
 target_link_libraries(Quoridor_Game

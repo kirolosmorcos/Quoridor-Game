@@ -1,5 +1,6 @@
-#include "AlphaBetaMinimax.h"
+#include "Alpha Beta Minimax.h"
 #include "../Models/GameState.h"
+#include "../Game Logic/Legal Moves.h"
 #include <limits>
 #include <vector>
 #include <algorithm>
@@ -49,12 +50,12 @@ int AlphaBetaMinimax(GameState gameState, int depth, int alpha, int beta, bool m
 {
     // 1. Terminal condition
     if (depth == 0 || gameState.isGameOver()) {
-        return gameState.evaluateBoard();
+        return evaluateBoard(gameState);
     }
 
     // 2. Generate heuristic-ordered successor states
     // Limit number of moves to control branching factor
-    const int NUMBER_OF_MOVES = 10;  // change this to be more difficult ai 
+    const int NUMBER_OF_MOVES = 3;  // change this to be more difficult ai
     
     /*
         enum AIDifficulty {
