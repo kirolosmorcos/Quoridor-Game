@@ -44,6 +44,7 @@ add_executable(Quoridor_Game
         src/UserInterface/ui/PawnSelectWindow.cpp
         src/UserInterface/ui/PawnSelectWindow.h
         src/UserInterface/Controller.h
+        src/main.cpp
 )
 
 target_link_libraries(Quoridor_Game
