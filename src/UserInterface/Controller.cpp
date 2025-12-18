@@ -2,6 +2,7 @@
 // Created by kiro3 on 12/18/2025.
 //
 #include "Controller.h"
+#include "../AI/Best Move.h"
 
 using namespace std;
 QVector<QPoint> getPawnLegalMoves(GameState state){
@@ -38,4 +39,7 @@ void hoverWall(GameState state)
     verticalWallMoves(state,state.turn);
 
 
+}
+GameState AIMove(GameState state){
+  return chooseBestMove(state,4);
 }
