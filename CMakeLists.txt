@@ -26,6 +26,8 @@ add_executable(Quoridor_Game
         "src/Game Logic/Legal Moves.cpp"
         "src/Game Logic/Legal Moves.h"
         src/Models/GameState.h
+        src/UserInterface/Controller.h
+        src/UserInterface/Controller.cpp
         src/UserInterface/assets
         src/UserInterface/util/Constants.h
         src/UserInterface/Main.cpp
@@ -43,8 +45,7 @@ add_executable(Quoridor_Game
         src/UserInterface/ui/ModeSelectWindow.h
         src/UserInterface/ui/PawnSelectWindow.cpp
         src/UserInterface/ui/PawnSelectWindow.h
-        src/UserInterface/Controller.h
-        src/main.cpp
+
 )
 
 target_link_libraries(Quoridor_Game
