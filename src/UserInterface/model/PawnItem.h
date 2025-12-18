@@ -25,6 +25,8 @@ public:
 private:
     QColor m_color;
     QPoint m_boardPos;
+
+
 };
 
 #endif

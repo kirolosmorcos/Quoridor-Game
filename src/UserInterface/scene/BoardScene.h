@@ -7,6 +7,8 @@
 
 #pragma once
 #include <QGraphicsScene>
+
+#include "../../Models/GameState.h"
 #include "../util/Constants.h"
 
 
@@ -38,6 +40,7 @@ class BoardScene : public QGraphicsScene {
     HoverType lastHover = HoverType::None;
     QGraphicsRectItem *whiteGoalRect = nullptr;
     QGraphicsRectItem *blackGoalRect = nullptr;
+    GameState game;
 
     void setBoardEnabled(bool enabled) {
         boardEnabled = enabled;

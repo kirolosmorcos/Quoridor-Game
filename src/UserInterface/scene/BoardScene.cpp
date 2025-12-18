@@ -26,7 +26,8 @@ QPointF BoardScene::cellCenter(int row, int col) const {
 
 void BoardScene::reset() {
     clear();
-    turn = Turn::White;
+
+    // turn = Turn::White;
 
     //TODO: reset wall arrays
     memset(hWall, false, sizeof(hWall));
@@ -190,26 +191,28 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 QVector<QPoint> BoardScene::getAvailableMoves(int r, int c) const
 {
     QVector<QPoint> moves;
+    //TODO: R,C append moves
 
     // UP
-    if (r > 0 && !hWall[r - 1][c]) {
-        moves.append({r - 1, c});
-    }
 
-    // DOWN
-    if (r < BOARD_SIZE - 1 && !hWall[r][c]) {
-        moves.append({r + 1, c});
-    }
-
-    // LEFT
-    if (c > 0 && !vWall[r][c - 1]) {
-        moves.append({r, c - 1});
-    }
-
-    // RIGHT
-    if (c < BOARD_SIZE - 1 && !vWall[r][c]) {
-        moves.append({r, c + 1});
-    }
+    // if (r > 0 && !hWall[r - 1][c]) {
+    //     moves.append({r - 1, c});
+    // }
+    //
+    // // DOWN
+    // if (r < BOARD_SIZE - 1 && !hWall[r][c]) {
+    //     moves.append({r + 1, c});
+    // }
+    //
+    // // LEFT
+    // if (c > 0 && !vWall[r][c - 1]) {
+    //     moves.append({r, c - 1});
+    // }
+    //
+    // // RIGHT
+    // if (c < BOARD_SIZE - 1 && !vWall[r][c]) {
+    //     moves.append({r, c + 1});
+    // }
 
     return moves;
 }
