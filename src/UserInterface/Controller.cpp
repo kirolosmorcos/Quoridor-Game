@@ -4,25 +4,31 @@
 #include "Controller.h"
 
 
-#include <bits/stdc++.h>
+
+
 using namespace std;
-vector<int> getPawnLegalMoves(GameState state){
+QVector<QPoint> getPawnLegalMoves(GameState state){
   bool turn = state.turn;
   vector<GameState> moves;
   moves=normalPawnMoves(state,turn);
   for(auto move:jumpMoves(state,turn)){
       moves.push_back(move);
   }
-    vector<int> legalPositions;
+    QVector<QPoint> legalPositions;
   for(auto move:moves)
   {
-
+      QPoint p;
         if(turn){
-            legalPositions.push_back(move.player1_pos);
+
+           p.setX(move.player1_pos/9);
+           p.setY(move.player1_pos%9);
         }
         else{
-            legalPositions.push_back(move.player0_pos);
+
+              p.setX(move.player0_pos/9);
+              p.setY(move.player0_pos%9);
         }
+        legalPositions.push_back(p);
   }
     return legalPositions;
 }

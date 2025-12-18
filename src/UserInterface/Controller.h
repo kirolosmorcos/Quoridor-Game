@@ -11,6 +11,9 @@
 #include "../Models/GameState.h"
 #include "../Game Logic/Legal Moves.h"
 #include <bits/stdc++.h>
+#include <QPoint>
+#include <QVector>
+
 
 using namespace std;
 
@@ -18,7 +21,7 @@ bool hoverHorizontal[8][9];
 bool hoverVertical[9][8];
 
 
-vector<int> getPawnLegalMoves(GameState state);
+QVector<QPoint> getPawnLegalMoves(GameState state);
 void hoverWall(GameState state);
 
 GameState AIMove(GameState state);
