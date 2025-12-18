@@ -10,6 +10,7 @@
 
 #include "../../Models/GameState.h"
 #include "../util/Constants.h"
+#include "../Controller.h"
 
 
 class WallItem;
@@ -26,7 +27,6 @@ class BoardScene : public QGraphicsScene {
     HoverType detectHover(const QPointF &p, int &row, int &col) const;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
-    QVector<QPoint> getAvailableMoves();
     bool movePawn(PawnItem *pawn, int toRow, int toCol);
 
     void updateLocation();

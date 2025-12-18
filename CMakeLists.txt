@@ -23,8 +23,8 @@ add_executable(Quoridor_Game
         "src/AI/Evaluation Function.cpp"
         "src/Game Logic/BFS.cpp"
         "src/Game Logic/BFS.h"
-        "src/Game Logic/Legal  Moves.cpp"
-        "src/Game Logic/Legal  Moves.h"
+        "src/Game Logic/Legal Moves.cpp"
+        "src/Game Logic/Legal Moves.h"
         src/Models/GameState.h
         src/UserInterface/assets
         src/UserInterface/util/Constants.h

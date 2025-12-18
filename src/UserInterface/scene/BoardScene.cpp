@@ -196,52 +196,10 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     }
 }
 
-QVector<QPoint> BoardScene::getAvailableMoves() {
-    QVector<QPoint> moves;
-    //TODO: R,C append moves call availabe moves and change them to QPoint and append to moves
 
-    // UP
-
-    // if (r > 0 && !hWall[r - 1][c]) {
-    //     moves.append({r - 1, c});
-    // }
-    //
-    // // DOWN
-    // if (r < BOARD_SIZE - 1 && !hWall[r][c]) {
-    //     moves.append({r + 1, c});
-    // }
-    //
-    // // LEFT
-    // if (c > 0 && !vWall[r][c - 1]) {
-    //     moves.append({r, c - 1});
-    // }
-    //
-    // // RIGHT
-    // if (c < BOARD_SIZE - 1 && !vWall[r][c]) {
-    //     moves.append({r, c + 1});
-    // }
-
-    return moves;
-}
-
-bool BoardScene::movePawn(PawnItem *pawn, int toRow, int toCol)
-{
-    // int x , y;
-    // if (game.turn == 0) {
-    //     x = game.player0_pos / 9;
-    //     y = game.player0_pos % 9;
-    // }
-    // else {
-    //     x = game.player1_pos / 9;
-    //     y = game.player1_pos % 9;
-    // }
-    //
-    // QPoint from; // YOU NEED THIS (see below)
-    // from.setX(x);
-    // from.setY(y);
-
+bool BoardScene::movePawn(PawnItem *pawn, int toRow, int toCol){
     //TODO: function to get available moves
-    auto moves = getAvailableMoves();
+    auto moves = getPawnLegalMoves(game);
 
     if (!moves.contains(QPoint(toRow, toCol)))
         return false;
@@ -284,7 +242,7 @@ void BoardScene::showMoveHighlights()
 {
     clearMoveHighlights();
     //TODO: get available moves
-    auto moves = getAvailableMoves();
+    auto moves =  getPawnLegalMoves(game);
 
     for (const QPoint &m : moves) {
         auto *rect = new QGraphicsRectItem(
