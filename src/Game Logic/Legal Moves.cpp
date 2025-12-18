@@ -298,6 +298,31 @@ vector<GameState> jumpMoves(GameState gameState, bool player) {
 	return legalJumpMoves;
 }
 
+bool doesHorizontalWallCrossVerticalWall (GameState gameState, int r, int c) {
+	int number_of_ones = 0;
+	while((r >= 0) && gameState.vertical_walls[r][c]) {
+		number_of_ones++;
+		r--;
+	}
+	if(number_of_ones % 2 == 0) {	// even number of ones (so can place wall)
+		return false;
+	}
+	return true;	// slot crosses vertical wall
+}
+
+bool doesVerticalWallCrossHorizontalWall (GameState gameState, int r, int c) {
+	int number_of_ones = 0;
+	while((c >= 0) && gameState.horizontal_walls[r][c]) {
+		number_of_ones++;
+		c--;
+	}
+	if(number_of_ones % 2 == 0) {	// even number of ones (so can place wall)
+		return false;
+	}
+	return true;	// slot crosses horizontal wall
+}
+
+
 vector<GameState> horizontalWallMoves(GameState gameState, bool player) {
 	vector<GameState> legalWallMoves = vector<GameState>();
 	// check remaining walls
@@ -317,7 +342,7 @@ vector<GameState> horizontalWallMoves(GameState gameState, bool player) {
 		for (int j = 0; j < 8; j++) {
 			if (gameState.horizontal_walls[i][j] || // cell is occupied
 				gameState.horizontal_walls[i][j + 1] || // adjacent cell is occupied (horizontal wall occupy 2 cells)
-				(gameState.vertical_walls[i][j] && gameState.vertical_walls[i + 1][j]) // slot crosses vertical wall
+				(doesHorizontalWallCrossVerticalWall(gameState, i, j)) // slot crosses vertical wall
 			) {
 				continue;
 			}
@@ -371,7 +396,7 @@ vector<GameState> verticalWallMoves(GameState gameState, bool player) {
 		for (int i = 0; i < 8; i++) {
 			if (gameState.vertical_walls[i][j] || // cell is occupied
 				gameState.vertical_walls[i + 1][j] || // adjacent cell is occupied
-				(gameState.horizontal_walls[i][j] && gameState.horizontal_walls[i][j + 1]) // slot crosses horizontal wall
+				(doesVerticalWallCrossHorizontalWall(gameState, i, j)) // slot crosses horizontal wall
 			) {
 				continue;
 			}
