@@ -1,0 +1,10 @@
+//
+// Created by ramez on 12/18/2025.
+//
+
+#ifndef QUORIDOR_GAME_CONTROLLER_H
+#define QUORIDOR_GAME_CONTROLLER_H
+
+
+
+#endif //QUORIDOR_GAME_CONTROLLER_H
