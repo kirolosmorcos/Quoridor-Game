@@ -14,10 +14,10 @@ MainMenuWindow::MainMenuWindow(QWidget *parent): QWidget(parent) {
 
 
     // 🔹 Game icon
-    QLabel *icon = new QLabel;
-    icon->setPixmap(QPixmap(":/assets/Icon1.png")
-                        .scaled(250, 250, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    icon->setAlignment(Qt::AlignCenter);
+    // QLabel *icon = new QLabel;
+    // icon->setPixmap(QPixmap(":/assets/Icon1.png")
+    //                     .scaled(250, 250, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    // icon->setAlignment(Qt::AlignCenter);
 
     QLabel *title = new QLabel("<h1>Quoridor</h1>");
     title->setAlignment(Qt::AlignCenter);
@@ -26,7 +26,7 @@ MainMenuWindow::MainMenuWindow(QWidget *parent): QWidget(parent) {
 
     layout->addWidget(title);
     layout->addStretch();
-    layout->addWidget(icon, 0, Qt::AlignCenter);
+    // layout->addWidget(icon, 0, Qt::AlignCenter);
     layout->addStretch();
     layout->addWidget(start);
 
