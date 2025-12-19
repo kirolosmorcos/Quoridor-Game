@@ -109,10 +109,6 @@ nextStates = getDescendingHeuristicMoves( gameState, maximizingPlayer, config.nu
             alpha   = std::max(alpha, eval);
 
             if (beta <= alpha) {
-                if (depth==1)
-                {
-                cout<<"Pruned at depth 2"<<endl;
-                }
                 break; //  Alpha–Beta pruning
             }
         }
@@ -130,10 +126,6 @@ nextStates = getDescendingHeuristicMoves( gameState, maximizingPlayer, config.nu
             beta    = std::min(beta, eval);
 
             if (beta <= alpha) {
-                if (depth==1)
-                {
-                    cout<<"Pruned at depth 2"<<endl;
-                }
                 break; // Alpha–Beta pruning
             }
         }
