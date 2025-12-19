@@ -1,8 +1,8 @@
-<RCC>
-    <qresource prefix="/">
-        <file>assets/Icon1.png</file>
-        <file>assets/board.png</file>
-        <file>assets/pawn_white.png</file>
-        <file>assets/pawn_black.png</file>
-    </qresource>
-</RCC>
+<!--<RCC>-->
+<!--    <qresource prefix="/">-->
+<!--        <file>assets/Icon1.png</file>-->
+<!--        <file>assets/board.png</file>-->
+<!--        <file>assets/pawn_white.png</file>-->
+<!--        <file>assets/pawn_black.png</file>-->
+<!--    </qresource>-->
+<!--</RCC>-->
