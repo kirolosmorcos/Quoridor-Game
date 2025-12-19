@@ -16,9 +16,6 @@ constexpr int WALL_OFFSET = (WALL_GAP - WALL_THICK) / 2;
 
 static constexpr int WALL_LEN = CELL_SIZE * 2 + WALL_THICK;
 
-// bool hWall[BOARD_SIZE - 1][BOARD_SIZE]; // horizontal walls
-// bool vWall[BOARD_SIZE][BOARD_SIZE - 1]; // vertical walls
-
 enum class GameMode { PvP, PvAI };
 enum class Difficulty { Easy, Medium, Hard };
 // enum class Turn { White, Black };

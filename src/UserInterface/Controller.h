@@ -14,6 +14,8 @@
 #include <QVector>
 #include <QPoint>
 
+#include "util/Constants.h"
+
 #pragma once
 using namespace std;
 
@@ -24,6 +26,6 @@ inline bool hoverVertical[9][8];
 QVector<QPoint> getPawnLegalMoves(GameState state);
 void hoverWall(GameState state);
 
-GameState AIMove(GameState state);
+GameState AIMove(GameState state , Difficulty diff);
 
 #endif //QUORIDOR_GAME_CONTROLLER_H

@@ -7,9 +7,10 @@
 #include <QPropertyAnimation>
 
 
-BoardScene::BoardScene(GameMode, Difficulty, QObject *parent)
+BoardScene::BoardScene(GameMode mode, Difficulty diff, QObject *parent)
 : QGraphicsScene(parent) {
-
+    this->mode = mode;
+    this->diff = diff;
     reset();
     setStickyFocus(true);
 }
@@ -22,8 +23,9 @@ QPointF BoardScene::cellCenter(int row, int col) const {
 }
 
 void BoardScene::reset() {
+    setBoardEnabled(false);
     clear();
-
+    setBoardEnabled(true);
     // turn = Turn::White;
     game.turn = false;
     game.p0_walls = 10;
@@ -33,8 +35,7 @@ void BoardScene::reset() {
     memset(game.horizontal_walls, false, sizeof(game.horizontal_walls));
     memset(game.vertical_walls, false, sizeof(game.vertical_walls));
 
-    // 🔹 BOARD DRAWING
-    // Option A: procedural grid (current)
+    // procedural grid (current)
     for (int r = 0; r < BOARD_SIZE; r++) {
         for (int c = 0; c < BOARD_SIZE; c++) {
             QPen pen(Qt::lightGray);
@@ -60,6 +61,18 @@ void BoardScene::reset() {
     wallPreview->setOpacity(0.5);
     wallPreview->setVisible(false);
 
+    // ---- LEFT HUD PANEL ----
+    const int HUD_WIDTH = 140;
+    const int HUD_HEIGHT = BOARD_SIZE * STEP;
+
+    auto *hudBg = addRect(
+        -HUD_WIDTH, 0,
+        HUD_WIDTH - 10, HUD_HEIGHT,
+        QPen(Qt::NoPen),
+        QBrush(Qt::darkGray) // dark panel
+    );
+    hudBg->setZValue(0.5);
+
     addItem(wallPreview);
     addItem(white);
     addItem(black);
@@ -71,6 +84,33 @@ void BoardScene::reset() {
 
     game.player0_pos = 76; // row 0, col 4
     game.player1_pos = 4;  // row 8, col 4
+
+    // ---- Wall counters ----
+    QFont hudFont("Arial", 14, QFont::Bold);
+
+    // White
+    whiteWallsText = addText("", hudFont);
+    whiteWallsText->setDefaultTextColor(Qt::white);
+    whiteWallsText->setTextWidth(HUD_WIDTH - 20);
+    whiteWallsText->setZValue(1);
+    whiteWallsText->setPos(-HUD_WIDTH + 10, STEP * 2);
+
+    // Black
+    blackWallsText = addText("", hudFont);
+    blackWallsText->setDefaultTextColor(Qt::black);
+    blackWallsText->setTextWidth(HUD_WIDTH - 20);
+    blackWallsText->setZValue(1);
+    blackWallsText->setPos(-HUD_WIDTH + 10, STEP * 6);
+
+    updateWallCounters();
+        setSceneRect(
+        -HUD_WIDTH,
+        0,
+        BOARD_SIZE * STEP + HUD_WIDTH,
+        BOARD_SIZE * STEP
+    );
+
+
     hoverWall(game);
     updateTurnHighlight();
 }
@@ -160,7 +200,7 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     int r, c;
     HoverType type = detectHover(event->scenePos(), r, c);
 
-    //TODO: change game state accordingly
+
     if (type == HoverType::Cell) {
         PawnItem *p = game.turn == 0 ? white : black;
         if (movePawn(p, r, c)) {
@@ -170,14 +210,13 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
         }
     }
     else if ((game.turn == 0 && game.p0_walls <= 0) ||
-            (game.turn == 1 && game.p1_walls <= 0)) {
+            (game.turn == 1 && game.p1_walls <= 0)) {}
 
-        }
     else if (type == HoverType::VerticalEdge) {
         if (!(r >= BOARD_SIZE - 1 || c >= BOARD_SIZE - 1)) {
             if (hoverVertical[r][c]){
-                game.vertical_walls[r][c]= true; // TODO: mark wall in array
-                game.vertical_walls[r+1][c]= true; // TODO: mark wall in array
+                game.vertical_walls[r][c]= true;
+                game.vertical_walls[r+1][c]= true;
 
                 auto *wall = new WallItem(ori::Vertical);
                 addItem(wall);
@@ -189,7 +228,7 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
                 }
                 game.turn = !game.turn;
                 hoverWall(game);
-
+                updateWallCounters();
                 updateTurnHighlight();
             }
         }
@@ -212,27 +251,28 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
                 game.turn = !game.turn;
 
                 hoverWall(game);
-
+                updateWallCounters();
                 updateTurnHighlight();
             }
         }
     }
+    modeAI();
 }
 
 bool BoardScene::movePawn(PawnItem *pawn, int toRow, int toCol){
     //TODO: function to get available moves
-    auto moves = getPawnLegalMoves(game);
-
-    if (!moves.contains(QPoint(toRow, toCol))) {
-        return false;
+    if (mode == GameMode::PvP || game.turn == 0) {
+        auto moves = getPawnLegalMoves(game);
+        if (!moves.contains(QPoint(toRow, toCol))) {
+            return false;
+        }
+        if (game.turn == 0) {
+            game.player0_pos = toRow * 9 + toCol;
+        } else {
+            game.player1_pos = toRow * 9 + toCol;
+        }
     }
-
     pawn->animateMove(cellCenter(toRow, toCol));
-    if (game.turn == 0) {
-        game.player0_pos = toRow * 9 + toCol;
-    } else {
-        game.player1_pos = toRow * 9 + toCol;
-    }
     if (checkWin()) {
         return false;
     }
@@ -243,6 +283,10 @@ void BoardScene::updateTurnHighlight(){
 
     white->setOpacity(game.turn == 0 ? 1.0 : 0.4);
     black->setOpacity(game.turn == 1? 1.0 : 0.2);
+
+    whiteWallsText->setOpacity(game.turn == 0 ? 1.0 : 0.5);
+    blackWallsText->setOpacity(game.turn == 1 ? 1.0 : 0.5);
+
     showMoveHighlights();
 }
 
@@ -315,10 +359,56 @@ void BoardScene::handleWin(QString w)
     // QMessageBox::information(nullptr, "Game Over", winner + " wins!");
 }
 
-void BoardScene::updateLocation() {
-    // Placeholder for future functionality
+void BoardScene::updateWallCounters()
+{
+    whiteWallsText->setPlainText(
+        QString("WHITE\nWalls: %1").arg(game.p0_walls)
+    );
+
+    blackWallsText->setPlainText(
+        QString("BLACK\nWalls: %1").arg(game.p1_walls)
+    );
 }
 
-void BoardScene::updateWalls() {
-    // Placeholder for future functionality
+void BoardScene::modeAI() {
+    if (mode == GameMode::PvAI && game.turn == 1) {
+        setBoardEnabled(false);
+        GameState before = game;
+        game = AIMove(game, diff);
+        GameState after = game;
+        bool valid = true;
+        if (before.player1_pos != after.player1_pos) {
+            int pos = after.player1_pos;
+            int r = pos / 9;
+            int c = pos % 9;
+            movePawn(black, r, c);
+            valid = false;
+        }
+        for (int r = 0; r < BOARD_SIZE - 1; r++) {
+            if (!valid) break;
+            for (int c = 0; c < BOARD_SIZE - 1; c++) {
+                if (!before.vertical_walls[r][c] && after.vertical_walls[r][c]) {
+                    auto *wall = new WallItem(ori::Vertical);
+                    addItem(wall);
+                    wall->setPos(c * STEP + CELL_SIZE - (WALL_THICK - WALL_GAP)/2, r * STEP - (WALL_LEN - STEP - CELL_SIZE)/2);
+                    valid = false;
+                    break;
+                }
+                if (!before.horizontal_walls[r][c] && after.horizontal_walls[r][c]) {
+                    auto *wall = new WallItem(ori::Horizontal);
+                    addItem(wall);
+                    wall->setPos(c * STEP - (WALL_LEN - STEP - CELL_SIZE)/2, r * STEP + CELL_SIZE - (WALL_THICK-WALL_GAP)/2);
+                    valid = false;
+                    break;
+                }
+            }
+        }
+        game.turn = 0;
+        if (!checkWin()){
+            setBoardEnabled(true);
+            hoverWall(game);
+            updateWallCounters();
+            updateTurnHighlight();
+        }
+    }
 }

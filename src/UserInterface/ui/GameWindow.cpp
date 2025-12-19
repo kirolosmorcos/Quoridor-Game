@@ -19,9 +19,9 @@ GameWindow::GameWindow(GameMode mode, Difficulty diff, QWidget *parent)
     view->setRenderHint(QPainter::Antialiasing);
     view->setMouseTracking(true);
     setCentralWidget(view);
-    resize(900, 700);
+    resize(800, 700);
 
-
+    //add undo and redo
     QToolBar *bar = addToolBar("Game");
     bar->addAction("Restart", scene, &BoardScene::reset);
     bar->addAction("New Game", this, [=]{

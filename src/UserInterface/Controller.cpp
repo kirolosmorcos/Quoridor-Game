@@ -3,6 +3,7 @@
 //
 #include "Controller.h"
 #include "../AI/Best Move.h"
+#include "util/Constants.h"
 
 using namespace std;
 QVector<QPoint> getPawnLegalMoves(GameState state){
@@ -40,6 +41,16 @@ void hoverWall(GameState state)
 
 
 }
-GameState AIMove(GameState state){
-  return chooseBestMove(state,4);
+
+GameState AIMove(GameState state , Difficulty diff){
+    switch (diff) {
+        case Difficulty::Easy:
+            return chooseBestMove(state,1);
+        case Difficulty::Medium:
+            return chooseBestMove(state,2);
+        case Difficulty::Hard:
+                return chooseBestMove(state,3);
+        default:
+            return chooseBestMove(state,1);
+    }
 }

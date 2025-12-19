@@ -29,13 +29,14 @@ class BoardScene : public QGraphicsScene {
 
     bool movePawn(PawnItem *pawn, int toRow, int toCol);
 
-    void updateLocation();
-    void updateWalls();
+    void updateWallCounters();
     void updateTurnHighlight();
     void showMoveHighlights();
     void clearMoveHighlights();
     bool checkWin();
     void handleWin(QString w);
+
+    void modeAI();
 
     QVector<QGraphicsRectItem*> moveHighlights;
     WallItem *wallPreview = nullptr;
@@ -65,6 +66,11 @@ private:
     bool vWall[BOARD_SIZE][BOARD_SIZE - 1]; // vertical walls
     bool boardEnabled = true;
 
+    QGraphicsTextItem *whiteWallsText = nullptr;
+    QGraphicsTextItem *blackWallsText = nullptr;
+
+    GameMode mode;
+    Difficulty diff;
 
 
     // 🔹 AI CONNECTION POINT
