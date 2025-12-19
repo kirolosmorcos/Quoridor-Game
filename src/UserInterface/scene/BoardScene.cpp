@@ -4,6 +4,7 @@
 #include "../model/PawnItem.h"
 #include "../model/WallItem.h"
 #include <QGraphicsSceneMouseEvent>
+#include <QTimer>
 #include <QPropertyAnimation>
 
 
@@ -256,7 +257,8 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
             }
         }
     }
-    modeAI();
+    if (mode == GameMode::PvAI)clearMoveHighlights();
+    QTimer::singleShot(150, this, &BoardScene::modeAI);
 }
 
 bool BoardScene::movePawn(PawnItem *pawn, int toRow, int toCol){
@@ -372,6 +374,7 @@ void BoardScene::updateWallCounters()
 
 void BoardScene::modeAI() {
     if (mode == GameMode::PvAI && game.turn == 1) {
+        clearMoveHighlights();
         setBoardEnabled(false);
         GameState before = game;
         game = AIMove(game, diff);

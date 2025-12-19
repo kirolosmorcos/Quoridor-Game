@@ -30,4 +30,10 @@ GameWindow::GameWindow(GameMode mode, Difficulty diff, QWidget *parent)
             close();
             }
         );
+    bar->addAction("Undo", this, [=] {
+        //l7d ma rbna yrid b2a
+    });
+    bar->addAction("Redo", this, [=] {
+        //l7d ma rbna yrid
+    });
 }
