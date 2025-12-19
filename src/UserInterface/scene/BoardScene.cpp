@@ -28,6 +28,7 @@ void BoardScene::reset() {
     game.turn = false;
     game.p0_walls = 10;
     game.p1_walls = 10;
+
     //TODO: reset wall arrays
     memset(game.horizontal_walls, false, sizeof(game.horizontal_walls));
     memset(game.vertical_walls, false, sizeof(game.vertical_walls));
@@ -70,6 +71,7 @@ void BoardScene::reset() {
 
     game.player0_pos = 76; // row 0, col 4
     game.player1_pos = 4;  // row 8, col 4
+    hoverWall(game);
     updateTurnHighlight();
 }
 
@@ -119,13 +121,10 @@ void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 
     if (type == HoverType::None) {
         wallPreview->setVisible(false);
-        return;
     }
-
-    if (type != lastHover) {
+    else if (type != lastHover) {
         lastHover = type;
     }
-
     if (type == HoverType::VerticalEdge) {
         if (!(r >= BOARD_SIZE - 1 || c >= BOARD_SIZE - 1)) {
             if (hoverVertical[r][c]) {
@@ -190,6 +189,7 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
                 }
                 game.turn = !game.turn;
                 hoverWall(game);
+
                 updateTurnHighlight();
             }
         }
@@ -197,6 +197,7 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     else if (type == HoverType::HorizontalEdge) {
         if (!(r >= BOARD_SIZE - 1 || c >= BOARD_SIZE - 1)) {
             if (hoverHorizontal[r][c]) {
+
                 game.horizontal_walls[r][c]= true; // TODO: mark wall in array
                 game.horizontal_walls[r][c+1]= true; // TODO: mark wall in array
 
@@ -209,7 +210,9 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
                     game.p1_walls--;
                 }
                 game.turn = !game.turn;
+
                 hoverWall(game);
+
                 updateTurnHighlight();
             }
         }
