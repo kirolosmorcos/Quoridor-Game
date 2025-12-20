@@ -55,7 +55,7 @@ int AlphaBetaMinimax(const GameState & gameState, int depth, int alpha, int beta
 
     // 2. Generate heuristic-ordered successor states
     // Limit number of moves to control branching factor
-    const int NUMBER_OF_MOVES = 100;  // change this to be more difficult ai
+    const int NUMBER_OF_MOVES = 5;  // change this to be more difficult ai
     
     /*
         enum AIDifficulty {

@@ -69,7 +69,7 @@ GameState  chooseBestMove(GameState state, int depth){
 
 GameState bestState;
 int bestScore = INT_MIN;
-vector <GameState> legalMoves= getDescendingHeuristicMoves(state, true,10);
+vector <GameState> legalMoves= getDescendingHeuristicMoves(state, true,5);
 
 //for(GameState move : legalMoves) {
 ////    cout<<"heurestic--> "<<heuresticDistanceToGoalDifference(move)<<endl;
