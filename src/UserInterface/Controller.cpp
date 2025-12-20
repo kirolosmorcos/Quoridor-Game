@@ -46,12 +46,12 @@ GameState AIMove(GameState state , Difficulty diff){
     switch (diff) {
 
         case Difficulty::Easy:
-            return chooseBestMove(state,1);
+            return chooseBestMove(state,1,5);
         case Difficulty::Medium:
-            return chooseBestMove(state,2);
+            return chooseBestMove(state,2,5);
         case Difficulty::Hard:
-                return chooseBestMove(state,3);
+                return chooseBestMove(state,3,5);
         default:
-            return chooseBestMove(state,1);
+            return chooseBestMove(state,1,5);
     }
 }

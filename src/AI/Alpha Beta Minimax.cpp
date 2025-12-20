@@ -46,7 +46,7 @@ static const int INF = std::numeric_limits<int>::max();
  * - Reduces number of nodes evaluated compared to plain minimax.
  * - Heuristic move ordering further improves efficiency.
  */
-int AlphaBetaMinimax(const GameState & gameState, int depth, int alpha, int beta, bool maximizingPlayer)
+int AlphaBetaMinimax(const GameState & gameState, int depth, int alpha, int beta, bool maximizingPlayer, int numberOfMoves)
 {
     // 1. Terminal condition
     if (depth == 0 || gameState.isGameOver()) {
@@ -55,7 +55,7 @@ int AlphaBetaMinimax(const GameState & gameState, int depth, int alpha, int beta
 
     // 2. Generate heuristic-ordered successor states
     // Limit number of moves to control branching factor
-    const int NUMBER_OF_MOVES = 5;  // change this to be more difficult ai
+    //const int NUMBER_OF_MOVES = 5;  // change this to be more difficult ai
     
     /*
         enum AIDifficulty {
@@ -91,11 +91,11 @@ nextStates = getDescendingHeuristicMoves( gameState, maximizingPlayer, config.nu
 
     if (maximizingPlayer) {
         // Best moves first → increase alpha faster
-        nextStates = getDescendingHeuristicMoves( gameState, maximizingPlayer, NUMBER_OF_MOVES );
+        nextStates = getDescendingHeuristicMoves( gameState, maximizingPlayer, numberOfMoves);
     }
     else {
         // Worst moves first → decrease beta faster
-        nextStates = getAscendingHeuristicMoves(gameState, maximizingPlayer, NUMBER_OF_MOVES );
+        nextStates = getAscendingHeuristicMoves(gameState, maximizingPlayer, numberOfMoves );
     }
 
     // 3. Maximizing player (AI)
@@ -103,7 +103,7 @@ nextStates = getDescendingHeuristicMoves( gameState, maximizingPlayer, config.nu
         int maxEval = -INF;
 
         for (const GameState& nextState : nextStates) {
-            int eval = AlphaBetaMinimax(nextState, depth - 1, alpha, beta, false);
+            int eval = AlphaBetaMinimax(nextState, depth - 1, alpha, beta, false, numberOfMoves);
 
             maxEval = std::max(maxEval, eval);
             alpha   = std::max(alpha, eval);
@@ -120,7 +120,7 @@ nextStates = getDescendingHeuristicMoves( gameState, maximizingPlayer, config.nu
         int minEval = INF;
 
         for (const GameState& nextState : nextStates) {
-            int eval = AlphaBetaMinimax(nextState, depth - 1, alpha, beta, true);
+            int eval = AlphaBetaMinimax(nextState, depth - 1, alpha, beta, true, numberOfMoves);
 
             minEval = std::min(minEval, eval);
             beta    = std::min(beta, eval);

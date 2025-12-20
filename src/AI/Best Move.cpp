@@ -54,7 +54,7 @@ void drawState2(const GameState& s)
 }
 
 
-GameState  chooseBestMove(GameState state, int depth){
+GameState  chooseBestMove(GameState state, int depth, int numberOfMoves) {
 
 //difficulty level
 //bestScore = -infinity
@@ -69,7 +69,7 @@ GameState  chooseBestMove(GameState state, int depth){
 
 GameState bestState;
 int bestScore = INT_MIN;
-vector <GameState> legalMoves= getDescendingHeuristicMoves(state, true,5);
+vector <GameState> legalMoves= getDescendingHeuristicMoves(state, true, numberOfMoves);
 
 //for(GameState move : legalMoves) {
 ////    cout<<"heurestic--> "<<heuresticDistanceToGoalDifference(move)<<endl;
@@ -86,7 +86,7 @@ vector <GameState> legalMoves= getDescendingHeuristicMoves(state, true,5);
     int alpha = INT_MIN;
     int beta = INT_MAX;
     for (const GameState& nextState : legalMoves) {
-        int eval = AlphaBetaMinimax(nextState, depth - 1, alpha, beta, false);
+        int eval = AlphaBetaMinimax(nextState, depth - 1, alpha, beta, false,numberOfMoves);
 
         if (eval > bestScore) {
             bestScore = eval;

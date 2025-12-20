@@ -17,6 +17,14 @@ int bfs(GameState startState, bool player)
         auto [curState, dist] = q.front();
         q.pop();
 
+        if(player)
+        {
+            curState.player0_pos=90;
+        }
+        else {
+            curState.player1_pos=90;
+        }
+
         int curPos = player ? curState.player1_pos
                             : curState.player0_pos;
 

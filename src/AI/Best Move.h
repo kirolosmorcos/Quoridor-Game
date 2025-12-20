@@ -10,7 +10,7 @@
 #include "../Game Logic/Legal Moves.h"
 #include "Alpha Beta Minimax.h"
 
-GameState  chooseBestMove(GameState state, int depth);
+GameState  chooseBestMove(GameState state, int depth, int numberOfMoves);
 
 
 

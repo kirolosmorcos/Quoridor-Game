@@ -45,6 +45,7 @@ add_executable(Quoridor_Game
         src/UserInterface/ui/ModeSelectWindow.h
         src/UserInterface/ui/PawnSelectWindow.cpp
         src/UserInterface/ui/PawnSelectWindow.h
+        src/main.cpp
 
 )
 
