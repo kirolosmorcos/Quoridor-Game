@@ -517,3 +517,236 @@ vector<GameState> getDescendingHeuristicMoves(GameState gameState, bool player, 
 
 	return allLegalMoves;
 }
+
+vector<GameState> BFSJumpMoves(GameState gameState, bool player) {
+	vector<GameState> legalJumpMoves = vector<GameState>();
+
+	int currentPawnRow, currentPawnCol;
+	int opponentPawnRow, opponentPawnCol;
+	if (player) {
+		currentPawnRow = gameState.getrow(gameState.player1_pos);
+		currentPawnCol = gameState.getcol(gameState.player1_pos);
+		opponentPawnRow = gameState.getrow(gameState.player0_pos);
+		opponentPawnCol = gameState.getcol(gameState.player0_pos);
+	}
+	else {
+		currentPawnRow = gameState.getrow(gameState.player0_pos);
+		currentPawnCol = gameState.getcol(gameState.player0_pos);
+		opponentPawnRow = gameState.getrow(gameState.player1_pos);
+		opponentPawnCol = gameState.getcol(gameState.player1_pos);
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	// check adjacent up
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	if ((currentPawnCol == opponentPawnCol) && ((currentPawnRow - 1) == opponentPawnRow) // adjacent upwards
+		&& !gameState.horizontal_walls[currentPawnRow - 1][currentPawnCol]) {
+		// & no walls between them
+		// check if there is no wall above opponent pawn & inside board
+		if ((opponentPawnRow != 0) // can jump up over inside board
+			&& !gameState.horizontal_walls[opponentPawnRow - 1][opponentPawnCol] // No wall upwards
+		) {
+			int nextPawnPosition = (opponentPawnRow - 1) * 9 + opponentPawnCol;
+			if (player) {
+				gameState.player1_pos = nextPawnPosition;
+			}
+			else {
+				gameState.player0_pos = nextPawnPosition;
+			}
+			legalJumpMoves.push_back(gameState);
+		}
+	}
+	// else {	// check jump diagonal up
+	// check jumping up left diagonal
+	if ((currentPawnCol == opponentPawnCol) && ((currentPawnRow - 1) == opponentPawnRow) // adjacent upwards
+		&& !gameState.horizontal_walls[currentPawnRow - 1][currentPawnCol]) {
+		if ((opponentPawnCol != 0) // can jump left over the opponent
+			&& !gameState.vertical_walls[opponentPawnRow][opponentPawnCol - 1] // No wall leftward the opponent
+		) {
+			int nextPawnPosition = opponentPawnRow * 9 + (opponentPawnCol - 1);
+			if (player) {
+				gameState.player1_pos = nextPawnPosition;
+			}
+			else {
+				gameState.player0_pos = nextPawnPosition;
+			}
+			legalJumpMoves.push_back(gameState);
+		}
+	}
+	// check jumping up right diagonal
+	if ((currentPawnCol == opponentPawnCol) && ((currentPawnRow - 1) == opponentPawnRow) // adjacent upwards
+		&& !gameState.horizontal_walls[currentPawnRow - 1][currentPawnCol]) {
+		if ((opponentPawnCol != 8) // can jump right over the opponent
+			&& !gameState.vertical_walls[opponentPawnRow][opponentPawnCol] // No wall rightwards the opponent
+		) {
+			int nextPawnPosition = opponentPawnRow * 9 + (opponentPawnCol + 1);
+			if (player) {
+				gameState.player1_pos = nextPawnPosition;
+			}
+			else {
+				gameState.player0_pos = nextPawnPosition;
+			}
+			legalJumpMoves.push_back(gameState);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	// check adjacent down
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	if ((currentPawnCol == opponentPawnCol) && ((currentPawnRow + 1) == opponentPawnRow) // adjacent downwards
+		&& !gameState.horizontal_walls[currentPawnRow][currentPawnCol]) {
+		// & no walls between them
+		// check if there is no wall below opponent pawn & inside board
+		if ((opponentPawnRow != 8) // can jump down over inside board
+			&& !gameState.horizontal_walls[opponentPawnRow][opponentPawnCol] // No wall downwards the opponent
+		) {
+			int nextPawnPosition = (opponentPawnRow + 1) * 9 + opponentPawnCol;
+			if (player) {
+				gameState.player1_pos = nextPawnPosition;
+			}
+			else {
+				gameState.player0_pos = nextPawnPosition;
+			}
+			legalJumpMoves.push_back(gameState);
+		}
+	}
+	// else {	// check jump diagonal down
+	// check jumping down left diagonal
+	if ((currentPawnCol == opponentPawnCol) && ((currentPawnRow + 1) == opponentPawnRow) // adjacent downwards
+		&& !gameState.horizontal_walls[currentPawnRow][currentPawnCol]) {
+		if ((opponentPawnCol != 0) // can jump left over the opponent
+			&& !gameState.vertical_walls[opponentPawnRow][opponentPawnCol - 1] // No wall leftward the opponent
+		) {
+			int nextPawnPosition = opponentPawnRow * 9 + (opponentPawnCol - 1);
+			if (player) {
+				gameState.player1_pos = nextPawnPosition;
+			}
+			else {
+				gameState.player0_pos = nextPawnPosition;
+			}
+			legalJumpMoves.push_back(gameState);
+		}
+	}
+	// check jumping down right diagonal
+	if ((currentPawnCol == opponentPawnCol) && ((currentPawnRow + 1) == opponentPawnRow) // adjacent downwards
+		&& !gameState.horizontal_walls[currentPawnRow][currentPawnCol]) {
+		if ((opponentPawnCol != 8) // can jump right over the opponent
+			&& !gameState.vertical_walls[opponentPawnRow][opponentPawnCol] // No wall rightwards the opponent
+		) {
+			int nextPawnPosition = opponentPawnRow * 9 + (opponentPawnCol + 1);
+			if (player) {
+				gameState.player1_pos = nextPawnPosition;
+			}
+			else {
+				gameState.player0_pos = nextPawnPosition;
+			}
+			legalJumpMoves.push_back(gameState);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	// check adjacent left
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	if ((currentPawnRow == opponentPawnRow) && ((currentPawnCol - 1) == opponentPawnCol) // adjacent leftwards
+		&& !gameState.vertical_walls[currentPawnRow][currentPawnCol - 1]) {
+		// & no walls between them
+		// check if there is no wall left opponent pawn & inside board
+		if ((opponentPawnCol != 0) // can jump left over inside board
+			&& !gameState.vertical_walls[opponentPawnRow][opponentPawnCol - 1] // No wall leftwards the opponent
+		) {
+			int nextPawnPosition = opponentPawnRow * 9 + (opponentPawnCol - 1);
+			if (player) {
+				gameState.player1_pos = nextPawnPosition;
+			}
+			else {
+				gameState.player0_pos = nextPawnPosition;
+			}
+			legalJumpMoves.push_back(gameState);
+		}
+	}
+	//else {	// check jump diagonal left
+	// check jumping left up diagonal
+	if ((currentPawnRow == opponentPawnRow) && ((currentPawnCol - 1) == opponentPawnCol) // adjacent leftwards
+		&& !gameState.vertical_walls[currentPawnRow][currentPawnCol - 1]) {
+		if ((opponentPawnRow != 0) // can jump up over the opponent
+			&& !gameState.horizontal_walls[opponentPawnRow - 1][opponentPawnCol] // No wall upward the opponent
+		) {
+			int nextPawnPosition = (opponentPawnRow - 1) * 9 + opponentPawnCol;
+			if (player) {
+				gameState.player1_pos = nextPawnPosition;
+			}
+			else {
+				gameState.player0_pos = nextPawnPosition;
+			}
+			legalJumpMoves.push_back(gameState);
+		}
+	}
+	// check jumping left down diagonal
+	if ((currentPawnRow == opponentPawnRow) && ((currentPawnCol - 1) == opponentPawnCol) // adjacent leftwards
+		&& !gameState.vertical_walls[currentPawnRow][currentPawnCol - 1]) {
+		if ((opponentPawnRow != 8) // can jump down over the opponent
+			&& !gameState.horizontal_walls[opponentPawnRow][opponentPawnCol] // No wall downwards the opponent
+		) {
+			int nextPawnPosition = (opponentPawnRow + 1) * 9 + opponentPawnCol;
+			if (player) {
+				gameState.player1_pos = nextPawnPosition;
+			}
+			else {
+				gameState.player0_pos = nextPawnPosition;
+			}
+			legalJumpMoves.push_back(gameState);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	// check adjacent right
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	if ((currentPawnRow == opponentPawnRow) && ((currentPawnCol + 1) == opponentPawnCol) // adjacent rightwards
+		&& !gameState.vertical_walls[currentPawnRow][currentPawnCol]) {
+		// & no walls between them
+		// check if there is no wall right opponent pawn & inside board
+		if ((opponentPawnCol != 8) // can jump right over inside board
+			&& !gameState.vertical_walls[opponentPawnRow][opponentPawnCol] // No wall rightwards the opponent
+		) {
+			int nextPawnPosition = opponentPawnRow * 9 + (opponentPawnCol + 1);
+			if (player) {
+				gameState.player1_pos = nextPawnPosition;
+			}
+			else {
+				gameState.player0_pos = nextPawnPosition;
+			}
+			legalJumpMoves.push_back(gameState);
+		}
+	}
+	//else {	// check jump diagonal right
+	// check jumping right up diagonal
+	if ((currentPawnRow == opponentPawnRow) && ((currentPawnCol + 1) == opponentPawnCol) // adjacent rightwards
+		&& !gameState.vertical_walls[currentPawnRow][currentPawnCol]) {
+		if ((opponentPawnRow != 0) // can jump up over the opponent
+			&& !gameState.horizontal_walls[opponentPawnRow - 1][opponentPawnCol] // No wall upward the opponent
+		) {
+			int nextPawnPosition = (opponentPawnRow - 1) * 9 + opponentPawnCol;
+			if (player) {
+				gameState.player1_pos = nextPawnPosition;
+			}
+			else {
+				gameState.player0_pos = nextPawnPosition;
+			}
+			legalJumpMoves.push_back(gameState);
+		}
+	}
+	// check jumping right down diagonal
+	if ((currentPawnRow == opponentPawnRow) && ((currentPawnCol + 1) == opponentPawnCol) // adjacent rightwards
+		&& !gameState.vertical_walls[currentPawnRow][currentPawnCol]) {
+		if ((opponentPawnRow != 8) // can jump down over the opponent
+			&& !gameState.horizontal_walls[opponentPawnRow][opponentPawnCol] // No wall downwards the opponent
+		) {
+			int nextPawnPosition = (opponentPawnRow + 1) * 9 + opponentPawnCol;
+			if (player) {
+				gameState.player1_pos = nextPawnPosition;
+			}
+			else {
+				gameState.player0_pos = nextPawnPosition;
+			}
+			legalJumpMoves.push_back(gameState);
+		}
+	}
+
+	return legalJumpMoves;
+}

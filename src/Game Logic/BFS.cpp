@@ -30,7 +30,7 @@ int bfs(GameState startState, bool player)
         vector<GameState> nextMoves;
 
         auto normal = normalPawnMoves(curState, player);
-        auto jumps  = jumpMoves(curState, player);
+        auto jumps  = BFSJumpMoves(curState, player);
 
         nextMoves.insert(nextMoves.end(), normal.begin(), normal.end());
         nextMoves.insert(nextMoves.end(), jumps.begin(), jumps.end());
