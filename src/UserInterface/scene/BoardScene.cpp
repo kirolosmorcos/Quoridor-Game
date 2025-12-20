@@ -24,6 +24,8 @@ QPointF BoardScene::cellCenter(int row, int col) const {
 }
 
 void BoardScene::reset() {
+    undoStack.clear();
+    redoStack.clear();
     setBoardEnabled(false);
     clear();
     setBoardEnabled(true);
@@ -204,7 +206,18 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
     if (type == HoverType::Cell) {
         PawnItem *p = game.turn == 0 ? white : black;
+        UndoAction a;
+        a.type = ActionType::PawnMove;
+        a.prevTurn = game.turn;
+        a.prevP0Pos = game.player0_pos;
+        a.prevP1Pos = game.player1_pos;
+
         if (movePawn(p, r, c)) {
+            a.nextP0Pos = game.player0_pos;
+            a.nextP1Pos = game.player1_pos;
+
+            undoStack.push_back(a);
+            redoStack.clear();
             game.turn = !game.turn;
             hoverWall(game);
             updateTurnHighlight();
@@ -227,10 +240,22 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
                 } else {
                     game.p1_walls--;
                 }
+                UndoAction a;
+                a.type = ActionType::PlaceWall;
+                a.prevTurn = game.turn;
+                a.wallOri = ori::Vertical;
+                a.r = r;
+                a.c = c;
+                a.wallItem = wall;
+
+                undoStack.push_back(a);
+                redoStack.clear();
+
                 game.turn = !game.turn;
                 hoverWall(game);
                 updateWallCounters();
                 updateTurnHighlight();
+
             }
         }
     }
@@ -249,6 +274,17 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
                 } else {
                     game.p1_walls--;
                 }
+                UndoAction a;
+                a.type = ActionType::PlaceWall;
+                a.prevTurn = game.turn;
+                a.wallOri = ori::Horizontal;
+                a.r = r;
+                a.c = c;
+                a.wallItem = wall;
+
+                undoStack.push_back(a);
+                redoStack.clear();
+
                 game.turn = !game.turn;
 
                 hoverWall(game);
@@ -376,14 +412,26 @@ void BoardScene::modeAI() {
     if (mode == GameMode::PvAI && game.turn == 1) {
         clearMoveHighlights();
         setBoardEnabled(false);
+
         GameState before = game;
         game = AIMove(game, diff);
         GameState after = game;
         bool valid = true;
+
         if (before.player1_pos != after.player1_pos) {
+            UndoAction a;
+            a.type = ActionType::PawnMove;
+            a.prevP0Pos = before.player0_pos;
+            a.prevP1Pos = before.player1_pos;
+            a.nextP0Pos = after.player0_pos;
+            a.nextP1Pos = after.player1_pos;
+            a.prevTurn = 1;
+            undoStack.push_back(a);
+
             int pos = after.player1_pos;
             int r = pos / 9;
             int c = pos % 9;
+
             movePawn(black, r, c);
             valid = false;
         }
@@ -395,6 +443,15 @@ void BoardScene::modeAI() {
                     addItem(wall);
                     wall->setPos(c * STEP + CELL_SIZE - (WALL_THICK - WALL_GAP)/2, r * STEP - (WALL_LEN - STEP - CELL_SIZE)/2);
                     valid = false;
+                    UndoAction a;
+                    a.type = ActionType::PlaceWall;
+                    a.prevTurn = 1;
+                    a.wallOri = ori::Vertical;
+                    a.r = r;
+                    a.c = c;
+                    a.wallItem = wall;
+
+                    undoStack.push_back(a);
                     break;
                 }
                 if (!before.horizontal_walls[r][c] && after.horizontal_walls[r][c]) {
@@ -402,6 +459,15 @@ void BoardScene::modeAI() {
                     addItem(wall);
                     wall->setPos(c * STEP - (WALL_LEN - STEP - CELL_SIZE)/2, r * STEP + CELL_SIZE - (WALL_THICK-WALL_GAP)/2);
                     valid = false;
+                    UndoAction a;
+                    a.type = ActionType::PlaceWall;
+                    a.prevTurn = 1;
+                    a.wallOri = ori::Horizontal;
+                    a.r = r;
+                    a.c = c;
+                    a.wallItem = wall;
+
+                    undoStack.push_back(a);
                     break;
                 }
             }
@@ -415,3 +481,80 @@ void BoardScene::modeAI() {
         }
     }
 }
+
+void BoardScene::undo() {
+    if (undoStack.isEmpty())
+        return;
+    if (!boardEnabled)
+        return;
+
+    UndoAction a = undoStack.takeLast();
+    redoStack.push_back(a);
+    game.turn = a.prevTurn;
+
+
+    if (a.type == ActionType::PawnMove) {
+        game.player0_pos = a.prevP0Pos;
+        game.player1_pos = a.prevP1Pos;
+
+        white->animateMove(cellCenter(game.player0_pos/9,game.player0_pos%9 ));
+        black->animateMove(cellCenter(game.player1_pos/9,game.player1_pos%9 ));
+    }
+
+    else if (a.type == ActionType::PlaceWall) {
+
+        if (a.wallOri == ori::Vertical) {
+            game.vertical_walls[a.r][a.c] = false;
+            game.vertical_walls[a.r + 1][a.c] = false;
+        } else {
+            game.horizontal_walls[a.r][a.c] = false;
+            game.horizontal_walls[a.r][a.c + 1] = false;
+        }
+        removeItem(a.wallItem);
+
+        game.turn == 0 ? game.p0_walls++ : game.p1_walls++;
+    }
+    hoverWall(game);
+    updateWallCounters();
+    updateTurnHighlight();
+}
+
+void BoardScene::redo() {
+    if (redoStack.isEmpty())
+        return;
+    if (!boardEnabled)
+        return;
+
+    UndoAction a = redoStack.takeLast();
+    undoStack.push_back(a);
+
+
+    if (a.type == ActionType::PawnMove) {
+        game.player0_pos = a.nextP0Pos;
+        game.player1_pos = a.nextP1Pos;
+
+        white->animateMove(cellCenter(game.player0_pos/9,game.player0_pos%9 ));
+        black->animateMove(cellCenter(game.player1_pos/9,game.player1_pos%9 ));
+    }
+
+    else if (a.type == ActionType::PlaceWall) {
+
+        if (a.wallOri == ori::Vertical) {
+            game.vertical_walls[a.r][a.c] = true;
+            game.vertical_walls[a.r + 1][a.c] = true;
+        } else {
+            game.horizontal_walls[a.r][a.c] = true;
+            game.horizontal_walls[a.r][a.c + 1] = true;
+        }
+        addItem(a.wallItem);
+        game.turn == 0 ? game.p0_walls-- : game.p1_walls--;
+    }
+    game.turn = !a.prevTurn;
+    hoverWall(game);
+    updateWallCounters();
+    updateTurnHighlight();
+}
+
+
+
+

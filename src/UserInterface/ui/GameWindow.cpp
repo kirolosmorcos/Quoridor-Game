@@ -31,9 +31,11 @@ GameWindow::GameWindow(GameMode mode, Difficulty diff, QWidget *parent)
             }
         );
     bar->addAction("Undo", this, [=] {
-        //l7d ma rbna yrid b2a
+        scene->undo();
+        if (mode == GameMode::PvAI ) scene->undo();
     });
     bar->addAction("Redo", this, [=] {
-        //l7d ma rbna yrid
+        scene->redo();
+        if (mode == GameMode::PvAI ) scene->redo();
     });
 }

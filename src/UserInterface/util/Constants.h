@@ -6,6 +6,7 @@
 #define QUORIDOR_GAME_CONSTANTS_H
 #pragma once
 
+class WallItem;
 const int PAWN_RADIUS = 20;
 static constexpr int BOARD_SIZE = 9;
 static constexpr int CELL_SIZE = 60;
@@ -26,4 +27,26 @@ enum class HoverType {
     HorizontalEdge,
     None
 };
+
+enum class ActionType {
+    PawnMove,
+    PlaceWall
+};
+
+struct UndoAction {
+    ActionType type;
+
+    int prevTurn;
+
+    int prevP0Pos;
+    int prevP1Pos;
+
+    int nextP0Pos;
+    int nextP1Pos;
+
+    ori wallOri;
+    int r, c;
+    WallItem *wallItem;
+};
+
 #endif //QUORIDOR_GAME_CONSTANTS_H

@@ -37,6 +37,9 @@ class BoardScene : public QGraphicsScene {
     void handleWin(QString w);
 
     void modeAI();
+    void undo();
+    void redo();
+
 
     QVector<QGraphicsRectItem*> moveHighlights;
     WallItem *wallPreview = nullptr;
@@ -72,10 +75,8 @@ private:
     GameMode mode;
     Difficulty diff;
 
-
-    // 🔹 AI CONNECTION POINT
-    // Store pointer/reference to your AI engine here
-    // Call AI when turn == Black and mode == PvAI
+    QVector<UndoAction> undoStack;
+    QVector<UndoAction> redoStack;
 };
 
 

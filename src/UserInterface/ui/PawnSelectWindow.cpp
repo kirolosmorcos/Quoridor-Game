@@ -29,7 +29,7 @@ PawnSelectWindow::PawnSelectWindow(GameMode mode, Difficulty diff, QWidget *pare
 
     layout->addWidget(info);
     layout->addWidget(start);
-    // 🔹 Add pawn previews here (images or 3D later)
+    // Add pawn previews here (images or 3D later)
 
 
     connect(start, &QPushButton::clicked, this, [=]{
