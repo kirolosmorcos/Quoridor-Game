@@ -449,26 +449,71 @@ vector<GameState> getAllLegalMoves(GameState gameState, bool player) {
 
 vector<GameState> getAscendingHeuristicMoves(GameState gameState, bool player, int numberOfMoves) {
 	vector<GameState> allLegalMoves = getAllLegalMoves(gameState, player);
-	sort(allLegalMoves.begin(), allLegalMoves.end(),
-	     [](const GameState& a, const GameState& b) {
-		     return heuresticDistanceToGoalDifference(a) < heuresticDistanceToGoalDifference(b);
-	     }
-	);
-	if(allLegalMoves.size() > numberOfMoves) {
-		allLegalMoves.resize(numberOfMoves);
+
+	// sort(allLegalMoves.begin(), allLegalMoves.end(),
+	//      [](const GameState& a, const GameState& b) {
+	// 	     return heuresticDistanceToGoalDifference(a) < heuresticDistanceToGoalDifference(b);
+	//      }
+	// );
+	// if(allLegalMoves.size() > numberOfMoves) {
+	// 	allLegalMoves.resize(numberOfMoves);
+	// }
+
+	if (numberOfMoves >= allLegalMoves.size()) {
+		return allLegalMoves;
 	}
+
+	nth_element(allLegalMoves.begin(),
+		allLegalMoves.begin() + numberOfMoves,
+		allLegalMoves.end(),
+		 [](const GameState& a, const GameState& b) {
+			 return heuresticDistanceToGoalDifference(a) < heuresticDistanceToGoalDifference(b);
+		 }
+	);
+
+	allLegalMoves.resize(numberOfMoves);
+
+	sort(allLegalMoves.begin(), allLegalMoves.end(),
+		 [](const GameState& a, const GameState& b) {
+			 return heuresticDistanceToGoalDifference(a) < heuresticDistanceToGoalDifference(b);
+		 }
+	);
+
 	return allLegalMoves;
 }
 
 vector<GameState> getDescendingHeuristicMoves(GameState gameState, bool player, int numberOfMoves) {
 	vector<GameState> allLegalMoves = getAllLegalMoves(gameState, player);
-	sort(allLegalMoves.begin(), allLegalMoves.end(),
+
+	// sort(allLegalMoves.begin(), allLegalMoves.end(),
+	//      [](const GameState& a, const GameState& b) {
+	// 	     return heuresticDistanceToGoalDifference(a) > heuresticDistanceToGoalDifference(b);
+	//      }
+	// );
+	// if(allLegalMoves.size() > numberOfMoves) {
+	// 	allLegalMoves.resize(numberOfMoves);
+	// }
+
+
+	if (numberOfMoves >= allLegalMoves.size()) {
+		return allLegalMoves;
+	}
+
+	nth_element(allLegalMoves.begin(),
+		allLegalMoves.begin() + numberOfMoves,
+		allLegalMoves.end(),
 	     [](const GameState& a, const GameState& b) {
 		     return heuresticDistanceToGoalDifference(a) > heuresticDistanceToGoalDifference(b);
 	     }
 	);
-	if(allLegalMoves.size() > numberOfMoves) {
-		allLegalMoves.resize(numberOfMoves);
-	}
+
+	allLegalMoves.resize(numberOfMoves);
+
+	sort(allLegalMoves.begin(), allLegalMoves.end(),
+		 [](const GameState& a, const GameState& b) {
+			 return heuresticDistanceToGoalDifference(a) > heuresticDistanceToGoalDifference(b);
+		 }
+	);
+
 	return allLegalMoves;
 }
