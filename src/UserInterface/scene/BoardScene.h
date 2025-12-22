@@ -21,7 +21,8 @@ class BoardScene : public QGraphicsScene {
     Q_OBJECT
     public:
 
-    BoardScene(GameMode mode, Difficulty diff, QObject *parent=nullptr);
+    BoardScene(GameMode mode, Difficulty diff, QColor p1Color,
+           QColor p2Color,bool turn, QObject *parent=nullptr);
 
     QPointF cellCenter(int row, int col) const;
     HoverType detectHover(const QPointF &p, int &row, int &col) const;
@@ -77,6 +78,10 @@ private:
 
     QVector<UndoAction> undoStack;
     QVector<UndoAction> redoStack;
+
+    QColor p1Color;
+    QColor p2Color;
+    bool turn;
 };
 
 

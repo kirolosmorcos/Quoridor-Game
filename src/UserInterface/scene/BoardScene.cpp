@@ -8,10 +8,14 @@
 #include <QPropertyAnimation>
 
 
-BoardScene::BoardScene(GameMode mode, Difficulty diff, QObject *parent)
+BoardScene::BoardScene(GameMode mode, Difficulty diff, QColor p1Color,
+           QColor p2Color,bool turn, QObject *parent)
 : QGraphicsScene(parent) {
+    this->p1Color = p1Color;
+    this->p2Color = p2Color;
     this->mode = mode;
     this->diff = diff;
+    this->turn = turn;
     reset();
     setStickyFocus(true);
 }
@@ -30,7 +34,7 @@ void BoardScene::reset() {
     clear();
     setBoardEnabled(true);
     // turn = Turn::White;
-    game.turn = false;
+    game.turn = turn;
     game.p0_walls = 10;
     game.p1_walls = 10;
 
@@ -52,13 +56,9 @@ void BoardScene::reset() {
             );
         }
     }
-    // Option B: image board
-    // QGraphicsPixmapItem *board = addPixmap(QPixmap(":/assets/board.png"));
-    // board->setZValue(0);
 
-
-    white = new PawnItem(Qt::white);
-    black = new PawnItem(Qt::black);
+    white = new PawnItem(p1Color);
+    black = new PawnItem(p2Color);
 
     wallPreview = new WallItem(ori::Vertical);
     wallPreview->setOpacity(0.5);
@@ -72,7 +72,7 @@ void BoardScene::reset() {
         -HUD_WIDTH, 0,
         HUD_WIDTH - 10, HUD_HEIGHT,
         QPen(Qt::NoPen),
-        QBrush(Qt::darkGray) // dark panel
+        QBrush(Qt::darkGray)
     );
     hudBg->setZValue(0.5);
 
@@ -96,14 +96,14 @@ void BoardScene::reset() {
     whiteWallsText->setDefaultTextColor(Qt::white);
     whiteWallsText->setTextWidth(HUD_WIDTH - 20);
     whiteWallsText->setZValue(1);
-    whiteWallsText->setPos(-HUD_WIDTH + 10, STEP * 2);
+    whiteWallsText->setPos(-HUD_WIDTH + 10, STEP * 6);
 
     // Black
     blackWallsText = addText("", hudFont);
     blackWallsText->setDefaultTextColor(Qt::black);
     blackWallsText->setTextWidth(HUD_WIDTH - 20);
     blackWallsText->setZValue(1);
-    blackWallsText->setPos(-HUD_WIDTH + 10, STEP * 6);
+    blackWallsText->setPos(-HUD_WIDTH + 10, STEP * 2);
 
     updateWallCounters();
         setSceneRect(
@@ -113,7 +113,8 @@ void BoardScene::reset() {
         BOARD_SIZE * STEP
     );
 
-
+    if (mode == GameMode::PvAI && game.turn == 1)
+        QTimer::singleShot(150, this, &BoardScene::modeAI);
     hoverWall(game);
     updateTurnHighlight();
 }
@@ -200,101 +201,104 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     }
     if (event->button() != Qt::LeftButton) return;
 
-    int r, c;
-    HoverType type = detectHover(event->scenePos(), r, c);
+    if (mode == GameMode::PvP || (mode == GameMode::PvAI && game.turn == 0)) {
+        int r, c;
+        HoverType type = detectHover(event->scenePos(), r, c);
 
 
-    if (type == HoverType::Cell) {
-        PawnItem *p = game.turn == 0 ? white : black;
-        UndoAction a;
-        a.type = ActionType::PawnMove;
-        a.prevTurn = game.turn;
-        a.prevP0Pos = game.player0_pos;
-        a.prevP1Pos = game.player1_pos;
+        if (type == HoverType::Cell) {
+            PawnItem *p = game.turn == 0 ? white : black;
+            UndoAction a;
+            a.type = ActionType::PawnMove;
+            a.prevTurn = game.turn;
+            a.prevP0Pos = game.player0_pos;
+            a.prevP1Pos = game.player1_pos;
 
-        if (movePawn(p, r, c)) {
-            a.nextP0Pos = game.player0_pos;
-            a.nextP1Pos = game.player1_pos;
-
-            undoStack.push_back(a);
-            redoStack.clear();
-            game.turn = !game.turn;
-            hoverWall(game);
-            updateTurnHighlight();
-        }
-    }
-    else if ((game.turn == 0 && game.p0_walls <= 0) ||
-            (game.turn == 1 && game.p1_walls <= 0)) {}
-
-    else if (type == HoverType::VerticalEdge) {
-        if (!(r >= BOARD_SIZE - 1 || c >= BOARD_SIZE - 1)) {
-            if (hoverVertical[r][c]){
-                game.vertical_walls[r][c]= true;
-                game.vertical_walls[r+1][c]= true;
-
-                auto *wall = new WallItem(ori::Vertical);
-                addItem(wall);
-                wall->setPos(c * STEP + CELL_SIZE - (WALL_THICK - WALL_GAP)/2, r * STEP - (WALL_LEN - STEP - CELL_SIZE)/2);
-                if (game.turn == 0) {
-                    game.p0_walls--;
-                } else {
-                    game.p1_walls--;
-                }
-                UndoAction a;
-                a.type = ActionType::PlaceWall;
-                a.prevTurn = game.turn;
-                a.wallOri = ori::Vertical;
-                a.r = r;
-                a.c = c;
-                a.wallItem = wall;
+            if (movePawn(p, r, c)) {
+                a.nextP0Pos = game.player0_pos;
+                a.nextP1Pos = game.player1_pos;
 
                 undoStack.push_back(a);
                 redoStack.clear();
-
                 game.turn = !game.turn;
                 hoverWall(game);
-                updateWallCounters();
                 updateTurnHighlight();
-
             }
         }
-    }
-    else if (type == HoverType::HorizontalEdge) {
-        if (!(r >= BOARD_SIZE - 1 || c >= BOARD_SIZE - 1)) {
-            if (hoverHorizontal[r][c]) {
+        else if ((game.turn == 0 && game.p0_walls <= 0) ||
+                (game.turn == 1 && game.p1_walls <= 0)) {}
 
-                game.horizontal_walls[r][c]= true; // TODO: mark wall in array
-                game.horizontal_walls[r][c+1]= true; // TODO: mark wall in array
+        else if (type == HoverType::VerticalEdge) {
+            if (!(r >= BOARD_SIZE - 1 || c >= BOARD_SIZE - 1)) {
+                if (hoverVertical[r][c]){
+                    game.vertical_walls[r][c]= true;
+                    game.vertical_walls[r+1][c]= true;
 
-                auto *wall = new WallItem(ori::Horizontal);
-                addItem(wall);
-                wall->setPos(c * STEP - (WALL_LEN - STEP - CELL_SIZE)/2, r * STEP + CELL_SIZE - (WALL_THICK-WALL_GAP)/2);
-                if (game.turn == 0) {
-                    game.p0_walls--;
-                } else {
-                    game.p1_walls--;
+                    auto *wall = new WallItem(ori::Vertical);
+                    addItem(wall);
+                    wall->setPos(c * STEP + CELL_SIZE - (WALL_THICK - WALL_GAP)/2, r * STEP - (WALL_LEN - STEP - CELL_SIZE)/2);
+                    if (game.turn == 0) {
+                        game.p0_walls--;
+                    } else {
+                        game.p1_walls--;
+                    }
+                    UndoAction a;
+                    a.type = ActionType::PlaceWall;
+                    a.prevTurn = game.turn;
+                    a.wallOri = ori::Vertical;
+                    a.r = r;
+                    a.c = c;
+                    a.wallItem = wall;
+
+                    undoStack.push_back(a);
+                    redoStack.clear();
+
+                    game.turn = !game.turn;
+                    hoverWall(game);
+                    updateWallCounters();
+                    updateTurnHighlight();
+
                 }
-                UndoAction a;
-                a.type = ActionType::PlaceWall;
-                a.prevTurn = game.turn;
-                a.wallOri = ori::Horizontal;
-                a.r = r;
-                a.c = c;
-                a.wallItem = wall;
+            }
+        }
+        else if (type == HoverType::HorizontalEdge) {
+            if (!(r >= BOARD_SIZE - 1 || c >= BOARD_SIZE - 1)) {
+                if (hoverHorizontal[r][c]) {
 
-                undoStack.push_back(a);
-                redoStack.clear();
+                    game.horizontal_walls[r][c]= true; // TODO: mark wall in array
+                    game.horizontal_walls[r][c+1]= true; // TODO: mark wall in array
 
-                game.turn = !game.turn;
+                    auto *wall = new WallItem(ori::Horizontal);
+                    addItem(wall);
+                    wall->setPos(c * STEP - (WALL_LEN - STEP - CELL_SIZE)/2, r * STEP + CELL_SIZE - (WALL_THICK-WALL_GAP)/2);
+                    if (game.turn == 0) {
+                        game.p0_walls--;
+                    } else {
+                        game.p1_walls--;
+                    }
+                    UndoAction a;
+                    a.type = ActionType::PlaceWall;
+                    a.prevTurn = game.turn;
+                    a.wallOri = ori::Horizontal;
+                    a.r = r;
+                    a.c = c;
+                    a.wallItem = wall;
 
-                hoverWall(game);
-                updateWallCounters();
-                updateTurnHighlight();
+                    undoStack.push_back(a);
+                    redoStack.clear();
+
+                    game.turn = !game.turn;
+
+                    hoverWall(game);
+                    updateWallCounters();
+                    updateTurnHighlight();
+                }
             }
         }
     }
-    if (mode == GameMode::PvAI)clearMoveHighlights();
-    QTimer::singleShot(150, this, &BoardScene::modeAI);
+
+    if (mode == GameMode::PvAI && game.turn == 1)
+        QTimer::singleShot(150, this, &BoardScene::modeAI);
 }
 
 bool BoardScene::movePawn(PawnItem *pawn, int toRow, int toCol){
@@ -340,6 +344,9 @@ void BoardScene::clearMoveHighlights()
 void BoardScene::showMoveHighlights()
 {
     clearMoveHighlights();
+    if (mode == GameMode::PvAI && game.turn == 1)
+        return;
+
     //TODO: get available moves
     auto moves =  getPawnLegalMoves(game);
 
@@ -369,13 +376,22 @@ bool BoardScene::checkWin() {
     int p1_row = game.player1_pos /9;
 
     if (p0_row == 0) {
-        handleWin("White Wins!");
+        if (mode == GameMode::PvP) {
+            handleWin("Player 1 Wins!");
+        }
+        else if (mode == GameMode::PvAI) {
+            handleWin("Player Wins!");
+        }
         return true;
     }
 
     if (p1_row == 8) {
-        //TODO: handle palyer type
-        handleWin("Black Wins!");
+        if (mode == GameMode::PvP) {
+            handleWin("Player 2 Wins!");
+        }
+        else if (mode == GameMode::PvAI) {
+            handleWin("AI Wins!");
+        }
         return true;
 
     }
@@ -399,89 +415,102 @@ void BoardScene::handleWin(QString w)
 
 void BoardScene::updateWallCounters()
 {
-    whiteWallsText->setPlainText(
-        QString("WHITE\nWalls: %1").arg(game.p0_walls)
+    if (mode == GameMode::PvP) {
+        whiteWallsText->setPlainText(
+        QString("Player 1\nWalls: %1").arg(game.p0_walls)
     );
 
-    blackWallsText->setPlainText(
-        QString("BLACK\nWalls: %1").arg(game.p1_walls)
+        blackWallsText->setPlainText(
+            QString("Player 2\nWalls: %1").arg(game.p1_walls)
+        );
+    }
+    else if (mode == GameMode::PvAI) {
+        whiteWallsText->setPlainText(
+        QString("Player\nWalls: %1").arg(game.p0_walls)
     );
+
+        blackWallsText->setPlainText(
+            QString("AI\nWalls: %1").arg(game.p1_walls)
+        );
+    }
+
 }
 
 void BoardScene::modeAI() {
-    if (mode == GameMode::PvAI && game.turn == 1) {
-        clearMoveHighlights();
-        setBoardEnabled(false);
+    clearMoveHighlights();
+    setBoardEnabled(false);
 
-        GameState before = game;
-        int s=undoStack.size()>1?undoStack[undoStack.size()-2].prevP1Pos:0;
+    GameState before = game;
+    int s = undoStack.size() > 1 ? undoStack[undoStack.size() - 2].prevP1Pos : 0;
 
-        game = AIMove(game, diff,s);
-        GameState after = game;
-        bool valid = true;
+    game = AIMove(game, diff, s);
+    GameState after = game;
+    bool valid = true;
 
-        if (before.player1_pos != after.player1_pos) {
-            UndoAction a;
-            a.type = ActionType::PawnMove;
-            a.prevP0Pos = before.player0_pos;
-            a.prevP1Pos = before.player1_pos;
-            a.nextP0Pos = after.player0_pos;
-            a.nextP1Pos = after.player1_pos;
-            a.prevTurn = 1;
-            undoStack.push_back(a);
+    if (before.player1_pos != after.player1_pos) {
+        UndoAction a;
+        a.type = ActionType::PawnMove;
+        a.prevP0Pos = before.player0_pos;
+        a.prevP1Pos = before.player1_pos;
+        a.nextP0Pos = after.player0_pos;
+        a.nextP1Pos = after.player1_pos;
+        a.prevTurn = 1;
+        undoStack.push_back(a);
 
-            int pos = after.player1_pos;
-            int r = pos / 9;
-            int c = pos % 9;
+        int pos = after.player1_pos;
+        int r = pos / 9;
+        int c = pos % 9;
 
-            movePawn(black, r, c);
-            valid = false;
-        }
-        for (int r = 0; r < BOARD_SIZE - 1; r++) {
-            if (!valid) break;
-            for (int c = 0; c < BOARD_SIZE - 1; c++) {
-                if (!before.vertical_walls[r][c] && after.vertical_walls[r][c]) {
-                    auto *wall = new WallItem(ori::Vertical);
-                    addItem(wall);
-                    wall->setPos(c * STEP + CELL_SIZE - (WALL_THICK - WALL_GAP)/2, r * STEP - (WALL_LEN - STEP - CELL_SIZE)/2);
-                    valid = false;
-                    UndoAction a;
-                    a.type = ActionType::PlaceWall;
-                    a.prevTurn = 1;
-                    a.wallOri = ori::Vertical;
-                    a.r = r;
-                    a.c = c;
-                    a.wallItem = wall;
+        movePawn(black, r, c);
+        valid = false;
+    }
+    for (int r = 0; r < BOARD_SIZE - 1; r++) {
+        if (!valid) break;
+        for (int c = 0; c < BOARD_SIZE - 1; c++) {
+            if (!before.vertical_walls[r][c] && after.vertical_walls[r][c]) {
+                auto *wall = new WallItem(ori::Vertical);
+                addItem(wall);
+                wall->setPos(c * STEP + CELL_SIZE - (WALL_THICK - WALL_GAP) / 2,
+                             r * STEP - (WALL_LEN - STEP - CELL_SIZE) / 2);
+                valid = false;
+                UndoAction a;
+                a.type = ActionType::PlaceWall;
+                a.prevTurn = 1;
+                a.wallOri = ori::Vertical;
+                a.r = r;
+                a.c = c;
+                a.wallItem = wall;
 
-                    undoStack.push_back(a);
-                    break;
-                }
-                if (!before.horizontal_walls[r][c] && after.horizontal_walls[r][c]) {
-                    auto *wall = new WallItem(ori::Horizontal);
-                    addItem(wall);
-                    wall->setPos(c * STEP - (WALL_LEN - STEP - CELL_SIZE)/2, r * STEP + CELL_SIZE - (WALL_THICK-WALL_GAP)/2);
-                    valid = false;
-                    UndoAction a;
-                    a.type = ActionType::PlaceWall;
-                    a.prevTurn = 1;
-                    a.wallOri = ori::Horizontal;
-                    a.r = r;
-                    a.c = c;
-                    a.wallItem = wall;
+                undoStack.push_back(a);
+                break;
+            }
+            if (!before.horizontal_walls[r][c] && after.horizontal_walls[r][c]) {
+                auto *wall = new WallItem(ori::Horizontal);
+                addItem(wall);
+                wall->setPos(c * STEP - (WALL_LEN - STEP - CELL_SIZE) / 2,
+                             r * STEP + CELL_SIZE - (WALL_THICK - WALL_GAP) / 2);
+                valid = false;
+                UndoAction a;
+                a.type = ActionType::PlaceWall;
+                a.prevTurn = 1;
+                a.wallOri = ori::Horizontal;
+                a.r = r;
+                a.c = c;
+                a.wallItem = wall;
 
-                    undoStack.push_back(a);
-                    break;
-                }
+                undoStack.push_back(a);
+                break;
             }
         }
-        game.turn = 0;
-        if (!checkWin()){
-            setBoardEnabled(true);
-            hoverWall(game);
-            updateWallCounters();
-            updateTurnHighlight();
-        }
     }
+    game.turn = 0;
+    if (!checkWin()) {
+        setBoardEnabled(true);
+        hoverWall(game);
+        updateWallCounters();
+        updateTurnHighlight();
+    }
+
 }
 
 void BoardScene::undo() {

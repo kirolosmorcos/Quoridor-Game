@@ -17,7 +17,12 @@ class BoardScene;
 class GameWindow : public QMainWindow {
     Q_OBJECT
     public:
-    GameWindow(GameMode mode, Difficulty diff, QWidget *parent=nullptr);
+    GameWindow(GameMode mode,
+           Difficulty diff,
+           QColor p1Color,
+           QColor p2Color = Qt::black,
+           bool turn = false,
+           QWidget *parent=nullptr);
 };
 
 

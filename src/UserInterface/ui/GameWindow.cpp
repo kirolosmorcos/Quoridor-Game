@@ -7,14 +7,19 @@
 #include "ModeSelectWindow.h"
 
 
-GameWindow::GameWindow(GameMode mode, Difficulty diff, QWidget *parent)
+GameWindow::GameWindow(GameMode mode,
+           Difficulty diff,
+           QColor p1Color,
+           QColor p2Color,
+           bool turn,
+           QWidget *parent)
 : QMainWindow(parent) {
 
 
     setWindowTitle("Quoridor Match");
 
 
-    auto *scene = new BoardScene(mode, diff, this);
+    auto *scene = new BoardScene(mode, diff, p1Color, p2Color, turn, this );
     auto *view = new QGraphicsView(scene);
     view->setRenderHint(QPainter::Antialiasing);
     view->setMouseTracking(true);

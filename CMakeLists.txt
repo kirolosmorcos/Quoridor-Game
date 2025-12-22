@@ -5,16 +5,14 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-set(QRC_FILES
-        "src/UserInterface//resources.qrc"
-)
+
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 qt_standard_project_setup()
 
-#qt_add_resources(RESOURCE_FILES resources.qrc)
 
 add_executable(Quoridor_Game
+        src/UserInterface/resources.qrc
         "src/AI/Alpha Beta Minimax.h"
         "src/AI/Alpha Beta Minimax.cpp"
         "src/AI/Best Move.cpp"
@@ -28,7 +26,6 @@ add_executable(Quoridor_Game
         src/Models/GameState.h
         src/UserInterface/Controller.h
         src/UserInterface/Controller.cpp
-        src/UserInterface/assets
         src/UserInterface/util/Constants.h
         src/UserInterface/Main.cpp
         src/UserInterface/ui/MainMenuWindow.h
