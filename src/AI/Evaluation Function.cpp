@@ -11,7 +11,7 @@ int evaluateBoard(GameState state) {
    // score+=state.player1_pos; //encourage ai to go down
 
 
-	score += (BlockingPotential(state) * 3);
+	score += (BlockingPotential(state) * 30);
 
 	return score;
 
@@ -40,7 +40,7 @@ int heuresticDistanceToGoalDifference(GameState state) {
 	else {
 		winBonus = 0;
 	}
-	int score = ((oppDistance) - (aiDistance))*2 + winBonus;
+	int score = ((oppDistance*40) - (aiDistance*40+1)) + winBonus;
 
     int aiWalls = state.p1_walls;
     int oppWalls = state.p0_walls;
