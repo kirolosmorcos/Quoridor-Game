@@ -75,6 +75,15 @@ void BoardScene::reset() {
         QBrush(Qt::darkGray)
     );
     hudBg->setZValue(0.5);
+    // ---- TURN INDICATOR ----
+    QFont turnFont("Arial", 16, QFont::Bold);
+
+    turnText = addText("", turnFont);
+    turnText->setDefaultTextColor(Qt::yellow);
+    turnText->setTextWidth(HUD_WIDTH - 20);
+    turnText->setZValue(1.2);
+    turnText->setPos(-HUD_WIDTH + 10, STEP * 0.5);
+
 
     addItem(wallPreview);
     addItem(white);
@@ -328,7 +337,7 @@ void BoardScene::updateTurnHighlight(){
 
     whiteWallsText->setOpacity(game.turn == 0 ? 1.0 : 0.5);
     blackWallsText->setOpacity(game.turn == 1 ? 1.0 : 0.5);
-
+    updateTurnIndicator();
     showMoveHighlights();
 }
 
@@ -585,6 +594,20 @@ void BoardScene::redo() {
     updateWallCounters();
     updateTurnHighlight();
 }
+void BoardScene::updateTurnIndicator()
+{
+    if (mode == GameMode::PvP) {
+        turnText->setPlainText(
+            game.turn == 0 ? "Turn:\nPlayer 1" : "Turn:\nPlayer 2"
+        );
+    }
+    else if (mode == GameMode::PvAI) {
+        turnText->setPlainText(
+            game.turn == 0 ? "Turn:\nPlayer" : "Turn:\nAI"
+        );
+    }
+}
+
 
 
 

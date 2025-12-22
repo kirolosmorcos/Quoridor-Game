@@ -30,6 +30,7 @@ class BoardScene : public QGraphicsScene {
 
     bool movePawn(PawnItem *pawn, int toRow, int toCol);
 
+    void updateTurnIndicator();
     void updateWallCounters();
     void updateTurnHighlight();
     void showMoveHighlights();
@@ -82,6 +83,7 @@ private:
     QColor p1Color;
     QColor p2Color;
     bool turn;
+    QGraphicsTextItem *turnText = nullptr;
 };
 
 
