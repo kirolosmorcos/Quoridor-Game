@@ -64,7 +64,7 @@ Each player controls a pawn and a limited number of walls. On each turn, a playe
 
 ## 🎥 Demo Video
 
-> _Demo link will be added here._
+> _https://drive.google.com/drive/folders/1m88Bd3u_NdBALCaXIoFyUORziG4pLrC7?usp=sharing_
 
 📺 **Demo Video:** 👉 _[Add demo link here]_
 
@@ -92,7 +92,7 @@ The video demonstrates:
 - Qt (6.10.1)
 - CMake (>= 3.10)
 
-Make sure Qt is properly installed and added to your environment.
+Make sure Qt is properly installed and added to your environment variables.
 
 ### 🛠️ Build Steps
 
