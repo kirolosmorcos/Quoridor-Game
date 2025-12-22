@@ -54,7 +54,7 @@ void drawState2(const GameState& s)
 }
 
 
-GameState  chooseBestMove(GameState state, int depth, int numberOfMoves) {
+GameState  chooseBestMove(GameState state, int depth, int numberOfMoves,int prevPos) {
 
 //difficulty level
 //bestScore = -infinity
@@ -88,10 +88,16 @@ vector <GameState> legalMoves= getDescendingHeuristicMoves(state, true, numberOf
     for (const GameState& nextState : legalMoves) {
         int eval = AlphaBetaMinimax(nextState, depth - 1, alpha, beta, false,numberOfMoves);
 
+
+        if(nextState.player1_pos== prevPos){
+            eval-=5; //encourage ai to move forward
+        }
         if (eval > bestScore) {
             bestScore = eval;
             bestState = nextState;
         }
+            //fix of hesitation between moves of ai
+
 
         alpha   = std::max(alpha, eval);
 

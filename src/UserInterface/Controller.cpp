@@ -42,16 +42,16 @@ void hoverWall(GameState state)
 
 }
 
-GameState AIMove(GameState state , Difficulty diff){
+GameState AIMove(GameState state , Difficulty diff,int prevPos){
     switch (diff) {
 
         case Difficulty::Easy:
-            return chooseBestMove(state,1,5);
+            return chooseBestMove(state,1,4,prevPos);
         case Difficulty::Medium:
-            return chooseBestMove(state,2,5);
+            return chooseBestMove(state,2,5,prevPos);
         case Difficulty::Hard:
-                return chooseBestMove(state,3,5);
+                return chooseBestMove(state,3,6,prevPos);
         default:
-            return chooseBestMove(state,1,5);
+            return chooseBestMove(state,1,5,prevPos);
     }
 }

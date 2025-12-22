@@ -414,7 +414,9 @@ void BoardScene::modeAI() {
         setBoardEnabled(false);
 
         GameState before = game;
-        game = AIMove(game, diff);
+        int s=undoStack.size()>1?undoStack[undoStack.size()-2].prevP1Pos:0;
+
+        game = AIMove(game, diff,s);
         GameState after = game;
         bool valid = true;
 

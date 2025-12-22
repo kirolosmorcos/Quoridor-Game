@@ -26,6 +26,6 @@ inline bool hoverVertical[9][8];
 QVector<QPoint> getPawnLegalMoves(GameState state);
 void hoverWall(GameState state);
 
-GameState AIMove(GameState state , Difficulty diff);
+GameState AIMove(GameState state , Difficulty diff,int prevPos);
 
 #endif //QUORIDOR_GAME_CONTROLLER_H

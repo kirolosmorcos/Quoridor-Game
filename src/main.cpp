@@ -91,29 +91,45 @@
 //    GameState s = emptyState();
 //
 //    // Player 0 (opponent) — looks fast
-//    s.player1_pos = 22;   // (2,4)
+//    s.player1_pos = 4*9+5;   // (2,4)
 //
 //    // Player 1 (AI)
-//    s.player0_pos = 67;   // (7,4)
+//    s.player0_pos = 7*9+8;   // (7,4)
 //
 //    // Walls form a deceptive corridor
 //    // Horizontal funnel
-//    for (int c = 0; c < 8; c++) {
-//        if (c != 4)
-//            s.horizontal_walls[3][c] = true;
-//    }
+////    for (int c = 1; c < 9; c++) {
+////        if (c != 3&&c!=4)
+////            s.horizontal_walls[0][c] = true;
+////    }
+//
+//   s.p1_walls=0;
 //
 //    // Vertical side locks
-//    s.vertical_walls[2][3] = true;
-//    s.vertical_walls[3][3] = true;
+////    for (int r = 1; r < 9; r++) {
+////        s.vertical_walls[r][2] = true;
+////
+////    }
+//    s.vertical_walls[5][4] = true;
+//    s.vertical_walls[6][4] = true;
 //
-//    s.vertical_walls[2][5] = true;
-//    s.vertical_walls[3][5] = true;
+////    for (int r = 3; r < 7; r++)
+////    s.vertical_walls[r][6] = true;
+////
+////    s.vertical_walls[6][5]=1;
+////    s.vertical_walls[7][5]=1;
+//
 //
 //    // Additional misleading walls
-//    s.horizontal_walls[1][2] = true;
-//    s.horizontal_walls[1][3] = true;
-//    s.horizontal_walls[1][4] = true;
+//    for (int r = 3; r < 7; r++)
+//        s.horizontal_walls[4][r] = true;
+////
+////    s.horizontal_walls[6][6] = true;
+////    s.horizontal_walls[6][7] = true;
+////
+////    s.horizontal_walls[7][7] = true;
+////    s.horizontal_walls[7][8] = true;
+//
 //
 //    return s;
 //}
@@ -131,7 +147,7 @@
 //    // --------------------------------------------------------
 //    // GENERATE WALL MOVES
 //    // --------------------------------------------------------
-//     int t=10;
+//     int t=2;
 //    //PRINT VERTICAL WALL MOVES
 //    // --------------------------------------------------------
 ////    auto desc = getAllLegalMoves(base, 1);
@@ -146,9 +162,9 @@
 ////    }
 //
 //
-////while(t--)
+//while(t--)
 //    {
-//         auto aiMove = chooseBestMove(base, 2);
+//         auto aiMove = chooseBestMove(base, 2,5);
 //
 //
 //         cout << "\n--- Ai Move #" << " ---\n";
