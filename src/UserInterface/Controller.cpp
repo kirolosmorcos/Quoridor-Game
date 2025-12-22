@@ -1,0 +1,57 @@
+//
+// Created by kiro3 on 12/18/2025.
+//
+#include "Controller.h"
+#include "../AI/Best Move.h"
+#include "util/Constants.h"
+
+using namespace std;
+QVector<QPoint> getPawnLegalMoves(GameState state){
+  bool turn = state.turn;
+  vector<GameState> moves;
+  moves=normalPawnMoves(state,turn);
+  for(auto move:jumpMoves(state,turn)){
+      moves.push_back(move);
+  }
+    QVector<QPoint> legalPositions;
+  for(auto move:moves)
+  {
+      QPoint p;
+        if(turn){
+
+           p.setX(move.player1_pos/9);
+           p.setY(move.player1_pos%9);
+        }
+        else{
+
+              p.setX(move.player0_pos/9);
+              p.setY(move.player0_pos%9);
+        }
+        legalPositions.push_back(p);
+  }
+    return legalPositions;
+}
+void hoverWall(GameState state)
+{
+    memset(hoverHorizontal,0,sizeof(hoverHorizontal));
+    memset(hoverVertical,0,sizeof(hoverVertical));
+
+    horizontalWallMoves(state,state.turn);
+    verticalWallMoves(state,state.turn);
+
+
+}
+
+GameState AIMove(GameState state , Difficulty diff,int prevPos){
+    switch (diff) {
+
+        case Difficulty::Easy:
+            return chooseBestMove(state,1,4,prevPos);
+        case Difficulty::Medium:
+            return chooseBestMove(state,2,5,prevPos);
+        case Difficulty::Hard:
+                return chooseBestMove(state,3,6,prevPos);
+        default:
+            return chooseBestMove(state,1,5,prevPos);
+    }
+}
