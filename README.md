@@ -48,11 +48,17 @@ Each player controls a pawn and a limited number of walls. On each turn, a playe
 
 ## 🖼️ Screenshots
 
-> _Screenshots will be added here._
+- Main Window:
+![img.png](ScreenShots/img.png)
+- Mode and difficulty selection:
+![img_1.png](ScreenShots/img_1.png)
+- Mode AI player turn and pawn:
+![img_2.png](ScreenShots/img_2.png)
+- Board with walls placed:
+![img_4.png](ScreenShots/img_4.png)
+- AI Wins:
+![img_5.png](ScreenShots/img_5.png)
 
-- Screenshot 1:
-- Screenshot 2:
-- Screenshot 3:
 
 ---
 
