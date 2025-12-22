@@ -271,7 +271,6 @@ void PawnSelectWindow::refreshUI()
             "Ready to start"
         );
     } else {
-        player1Starts = true;
 
         if (currentSelection == 0)
             infoLabel->setText("Player 1: Choose pawn color");

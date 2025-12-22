@@ -34,7 +34,7 @@ void BoardScene::reset() {
     clear();
     setBoardEnabled(true);
     // turn = Turn::White;
-    game.turn = turn;
+    game.turn = this->turn;
     game.p0_walls = 10;
     game.p1_walls = 10;
 

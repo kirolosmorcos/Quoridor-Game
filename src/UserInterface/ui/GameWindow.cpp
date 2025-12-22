@@ -18,7 +18,7 @@ GameWindow::GameWindow(GameMode mode,
 
     setWindowTitle("Quoridor Match");
 
-
+    cout<<turn;
     auto *scene = new BoardScene(mode, diff, p1Color, p2Color, turn, this );
     auto *view = new QGraphicsView(scene);
     view->setRenderHint(QPainter::Antialiasing);
